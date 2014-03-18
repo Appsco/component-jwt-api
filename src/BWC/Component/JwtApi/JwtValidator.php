@@ -11,7 +11,6 @@ class JwtValidator implements JwtValidatorInterface
 {
     const MAX_ISSUED_TIME_DIFFERENCE = 120;
 
-
     /** @var  Encoder */
     protected $jwtEncoder;
 

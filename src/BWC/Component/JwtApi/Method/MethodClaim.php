@@ -1,6 +1,6 @@
 <?php
 
-namespace BWC\Component\JwtApi;
+namespace BWC\Component\JwtApi\Method;
 
 final class MethodClaim
 {

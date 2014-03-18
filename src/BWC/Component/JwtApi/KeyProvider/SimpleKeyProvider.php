@@ -3,6 +3,7 @@
 namespace BWC\Component\JwtApi\KeyProvider;
 
 use BWC\Component\Jwe\Jwt;
+use BWC\Component\JwtApi\Context\JwtContext;
 
 class SimpleKeyProvider implements KeyProviderInterface
 {
@@ -25,10 +26,10 @@ class SimpleKeyProvider implements KeyProviderInterface
     }
 
     /**
-     * @param Jwt $jwt
+     * @param JwtContext $context
      * @return string[]
      */
-    public function getKeys(Jwt $jwt)
+    public function getKeys(JwtContext $context)
     {
         return $this->keys;
     }

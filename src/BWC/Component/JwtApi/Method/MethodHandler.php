@@ -3,7 +3,11 @@
 namespace BWC\Component\JwtApi\Method;
 
 use BWC\Component\JwtApi\Context\JwtContext;
+use BWC\Component\JwtApi\Event\JwtApiEvent;
+use BWC\Component\JwtApi\Event\MethodEvent;
+use BWC\Component\JwtApi\Event\MethodEvents;
 use BWC\Component\JwtApi\HandlerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 
 class MethodHandler implements HandlerInterface
@@ -13,6 +17,30 @@ class MethodHandler implements HandlerInterface
      * @var array MethodInterface[]
      */
     protected $methods = array();
+
+    /** @var  EventDispatcherInterface|null */
+    protected $eventDispatcher;
+
+
+
+    /**
+     * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
+     */
+    public function setEventDispatcher(EventDispatcherInterface $eventDispatcher)
+    {
+        $this->eventDispatcher = $eventDispatcher;
+    }
+
+    /**
+     * @return null|\Symfony\Component\EventDispatcher\EventDispatcherInterface
+     */
+    public function getEventDispatcher()
+    {
+        return $this->eventDispatcher;
+    }
+
+
+
 
 
     /**
@@ -24,10 +52,20 @@ class MethodHandler implements HandlerInterface
 
         $context->setRequestJwt($requestJwt);
 
+        $this->checkSubjectBearer($context);
+
         $method = $this->getMethod($requestJwt->getMethod());
 
+        if ($this->dispatchBeforeHandle($context, $method)) {
+
+            return;
+        }
+
         $method->handle($context);
+
+        $this->dispatchAfterHandle($context, $method);
     }
+
 
     /**
      * @param string $methodName
@@ -44,6 +82,20 @@ class MethodHandler implements HandlerInterface
 
 
     /**
+     * @param JwtContext $context
+     * @throws \RuntimeException
+     */
+    protected function checkSubjectBearer(JwtContext $context)
+    {
+        if ($context->getBearer()) {
+            if ($context->getRequestJwt()->getSubject()) {
+                throw new \RuntimeException('Subject can not be specified if bearer is present');
+            }
+            $context->getRequestJwt()->setSubject($context->getBearer()->getSubject());
+        }
+    }
+
+    /**
      * @param string $methodName
      * @return MethodInterface
      * @throws \RuntimeException
@@ -56,4 +108,40 @@ class MethodHandler implements HandlerInterface
 
         return $this->methods[$methodName];
     }
-} 
+
+
+    /**
+     * @param JwtContext $context
+     * @param MethodInterface $method
+     * @return bool
+     */
+    protected function dispatchBeforeHandle(JwtContext $context, MethodInterface $method)
+    {
+        if ($this->eventDispatcher) {
+            $event = new MethodEvent($context, $method);
+            $this->eventDispatcher->dispatch(MethodEvents::BEFORE_HANDLE, $event);
+
+            if ($event->isHandled()) {
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
+    /**
+     * @param JwtContext $context
+     * @param MethodInterface $method
+     * @return void
+     */
+    protected function dispatchAfterHandle(JwtContext $context, MethodInterface $method)
+    {
+        if ($this->eventDispatcher) {
+            $event = new MethodEvent($context, $method);
+            $this->eventDispatcher->dispatch(MethodEvents::AFTER_HANDLE, $event);
+        }
+    }
+
+}

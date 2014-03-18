@@ -11,7 +11,7 @@ use BWC\Component\Jwe\JwtReceived;
 use Symfony\Component\HttpFoundation\Request;
 
 
-class JwtHandlerService
+class JwtHandlerService implements JwtHandlerServiceInterface
 {
     /**
      * @var JwtContextManagerInterface
@@ -83,7 +83,7 @@ class JwtHandlerService
 
         $handler = $this->getHandler($context->getRequestJwt());
 
-        $keys = $this->getKeysForJwt($context->getRequestJwt());
+        $keys = $this->getKeys($context);
 
         $this->validateJwt($context->getRequestJwt(), $keys);
 
@@ -126,12 +126,12 @@ class JwtHandlerService
 
 
     /**
-     * @param Jwt $jwt
+     * @param JwtContext $context
      * @return string[]
      */
-    protected function getKeysForJwt(Jwt $jwt)
+    protected function getKeys(JwtContext $context)
     {
-        $keys = $this->keyProvider->getKeys($jwt);
+        $keys = $this->keyProvider->getKeys($context);
 
         return $keys;
     }

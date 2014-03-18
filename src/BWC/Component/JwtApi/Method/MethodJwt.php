@@ -2,7 +2,6 @@
 
 namespace BWC\Component\JwtApi\Method;
 
-use BWC\Component\JwtApi\MethodClaim;
 use BWC\Component\Jwe\JwtClaim;
 use BWC\Component\Jwe\Jwt;
 use BWC\Share\Sys\DateTime;

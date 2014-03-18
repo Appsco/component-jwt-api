@@ -26,11 +26,11 @@ class JwtContextManager implements JwtContextManagerInterface
      */
     public function receive(Request $request)
     {
-        $bindingType = JwtBindingType::HTTP_REDIRECT;
+        $bindingType = JwtBindingType::HTTP_POST;
         $jwtToken = $request->request->get('jwt');
         if (!$jwtToken) {
             $jwtToken = $request->query->get('jwt');
-            $bindingType = JwtBindingType::HTTP_POST;
+            $bindingType = JwtBindingType::HTTP_REDIRECT;
         }
 
         if (!$jwtToken) {

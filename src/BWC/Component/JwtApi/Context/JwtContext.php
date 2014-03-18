@@ -36,6 +36,10 @@ class JwtContext
     /** @var  string */
     protected $responseToken;
 
+    /** @var array */
+    protected $options = array();
+
+
 
     /**
      * @param \Symfony\Component\HttpFoundation\Request $request
@@ -181,7 +185,34 @@ class JwtContext
     }
 
 
+    /**
+     * @return array
+     */
+    public function getOptions()
+    {
+        return $this->options;
+    }
 
+    /**
+     * @param string $name
+     * @param mixed $value
+     * @return JwtContext|$this
+     */
+    public function optionSet($name, $value)
+    {
+        $this->options[$name] = $value;
+
+        return $this;
+    }
+
+    /**
+     * @param string $name
+     * @return mixed|null
+     */
+    public function optionGet($name)
+    {
+        return @$this->options[$name];
+    }
 
 
 } 

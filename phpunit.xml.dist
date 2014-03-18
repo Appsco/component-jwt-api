@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="autoload.php" color="true">
+    <testsuites>
+        <testsuite name="BwcComponentJwtApi">
+            <directory suffix="Test.php">./test/Bwc/Component/JwtApi/Test</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>

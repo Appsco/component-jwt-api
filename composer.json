@@ -1,0 +1,15 @@
+{
+    "name": "bwc/component-jwt-api",
+    "license": "MIT",
+    "minimum-stability": "stable",
+    "autoload": {
+        "psr-0": {
+            "BWC\\Component\\JwtApi\\": "src/",
+            "BWC\\Component\\JwtApi\\Test": "test/"
+        }
+    }, 
+    "require": {
+        "bwc/component-jwe": "dev-master",
+        "symfony/http-foundation": "~2.2"
+    }
+}

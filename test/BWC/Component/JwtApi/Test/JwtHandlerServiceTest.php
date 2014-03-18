@@ -4,7 +4,11 @@ namespace BWC\Component\JwtApi\Test;
 
 use BWC\Component\Jwe\Jwt;
 use BWC\Component\Jwe\JwtReceived;
+use BWC\Component\JwtApi\Context\JwtBindingType;
+use BWC\Component\JwtApi\Context\JwtContext;
 use BWC\Component\JwtApi\JwtHandlerService;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class JwtHandlerServiceTest extends \PHPUnit_Framework_TestCase
 {
@@ -14,6 +18,8 @@ class JwtHandlerServiceTest extends \PHPUnit_Framework_TestCase
     public function shouldHandle()
     {
         $expectedJwtString = 'jwtString';
+
+        $request = new Request(array('jwt'=>$expectedJwtString));
 
         $contextManagerMock = $this->getContextManagerMock();
         $encoderMock = $this->getJwtDecoderMock();
@@ -28,6 +34,13 @@ class JwtHandlerServiceTest extends \PHPUnit_Framework_TestCase
         $expectedJwt->setType($expectedType = 'type_one');
 
         $expectedJoseResult = new Jwt();
+
+        $contextManagerMock->expects($this->once())
+            ->method('receive')
+            ->with($request)
+            ->will($this->returnValue(
+                $expectedContext = new JwtContext($request, JwtBindingType::HTTP_REDIRECT, $expectedJwtString, null)
+            ));
 
         $encoderMock->expects($this->once())
             ->method('decode')
@@ -44,20 +57,32 @@ class JwtHandlerServiceTest extends \PHPUnit_Framework_TestCase
             ->method('validate')
             ->with($expectedJwt, $expectedKeys);
 
+        $expectedResponseJwt = new Jwt();
+
         $handlerMock->expects($this->once())
             ->method('handle')
-            ->with($expectedJwt)
-            ->will($this->returnValue($expectedJoseResult));
+            ->with($expectedContext)
+            ->will($this->returnCallback(
+                function(JwtContext $context) use ($expectedResponseJwt)
+                {
+                    $context->setResponseJwt($expectedResponseJwt);
+                }
+            ));
 
         $encoderMock->expects($this->once())
             ->method('encode')
             ->with($expectedJoseResult, $expectedKeys[0])
             ->will($this->returnValue($expectedResultToken = 'result_token'));
 
+        $contextManagerMock->expects($this->once())
+            ->method('send')
+            ->with($expectedContext)
+            ->will($this->returnValue($expectedResponse = new Response($expectedResultToken)));
+
         $handlerService = new JwtHandlerService($contextManagerMock, $encoderMock, $keyProviderMock, $validatorMock);
         $handlerService->addHandler($expectedType, $handlerMock);
 
-        $response = $handlerService->handle($expectedJwtString);
+        $response = $handlerService->handle($request);
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $response);
         $this->assertEquals($expectedResultToken, $response->getContent());

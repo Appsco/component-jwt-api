@@ -89,6 +89,8 @@ class JwtHandlerService
 
         $this->handleJwt($handler, $context);
 
+        $this->encode($context, $keys);
+
         $response = $this->contextManager->send($context);
 
         return $response;
@@ -159,4 +161,10 @@ class JwtHandlerService
     }
 
 
+    protected function encode(JwtContext $context, array $keys)
+    {
+        $context->setResponseToken(
+            $this->jwtEncoder->encode($context->getResponseJwt(), array_shift($keys))
+        );
+    }
 } 

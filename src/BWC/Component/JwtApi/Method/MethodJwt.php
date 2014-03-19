@@ -8,7 +8,7 @@ use BWC\Share\Sys\DateTime;
 
 class MethodJwt extends Jwt
 {
-    const PAYLOAD_TYPE = 'appsco/method';
+    const PAYLOAD_TYPE = 'appsco-method';
 
 
     /**

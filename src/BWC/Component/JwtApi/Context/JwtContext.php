@@ -2,8 +2,8 @@
 
 namespace BWC\Component\JwtApi\Context;
 
-use BWC\Component\JwtApi\Bearer\BearerInterface;
 use BWC\Component\Jwe\Jwt;
+use BWC\Component\JwtApi\Method\MethodJwt;
 use Symfony\Component\HttpFoundation\Request;
 
 
@@ -18,11 +18,14 @@ class JwtContext
     /** @var  string */
     protected $requestJwtToken;
 
-    /** @var  BearerInterface|null */
+    /** @var  mixed|null */
     protected $bearer;
 
     /** @var  Jwt */
     protected $requestJwt;
+
+    /** @var  mixed|null */
+    protected $subject;
 
     /** @var  Jwt */
     protected $responseJwt;
@@ -31,7 +34,7 @@ class JwtContext
     protected $destinationUrl;
 
     /** @var  string */
-    protected $responseBindingType = JwtBindingType::CONTENT;
+    protected $responseBindingType;
 
     /** @var  string */
     protected $responseToken;
@@ -45,13 +48,13 @@ class JwtContext
      * @param \Symfony\Component\HttpFoundation\Request $request
      * @param string $requestBindingType
      * @param string $requestJwtToken
-     * @param BearerInterface|null $bearer
+     * @param mixed|null $bearer
      * @throws \InvalidArgumentException
      */
-    public function __construct(Request $request, $requestBindingType, $requestJwtToken, BearerInterface $bearer = null)
+    public function __construct(Request $request, $requestBindingType, $requestJwtToken, $bearer = null)
     {
         if (!JwtBindingType::isValid($requestBindingType)) {
-            throw new \InvalidArgumentException('Invalid requestBindingType');
+            throw new \InvalidArgumentException('Invalid request binding type');
         }
         $this->request = $request;
         $this->requestBindingType = $requestBindingType;
@@ -70,7 +73,7 @@ class JwtContext
     }
 
     /**
-     * @return \BWC\Component\JwtApi\Bearer\BearerInterface|null
+     * @return mixed|null
      */
     public function getBearer()
     {
@@ -111,6 +114,37 @@ class JwtContext
     public function getRequestJwt()
     {
         return $this->requestJwt;
+    }
+
+    /**
+     * @return MethodJwt|null
+     */
+    public function getRequestJwtAsMethodJwt()
+    {
+        if ($this->requestJwt instanceof MethodJwt) {
+            return $this->requestJwt;
+        }
+
+        return null;
+    }
+
+    /**
+     * @param mixed|null $subject
+     * @return JwtContext|$this
+     */
+    public function setSubject($subject)
+    {
+        $this->subject = $subject;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed|null
+     */
+    public function getSubject()
+    {
+        return $this->subject;
     }
 
     /**

@@ -3,9 +3,8 @@
 namespace BWC\Component\JwtApi\Method;
 
 use BWC\Component\JwtApi\Context\JwtContext;
-use BWC\Component\JwtApi\Event\JwtApiEvent;
-use BWC\Component\JwtApi\Event\MethodEvent;
-use BWC\Component\JwtApi\Event\MethodEvents;
+use BWC\Component\JwtApi\Method\Event\MethodEvent;
+use BWC\Component\JwtApi\Method\Event\MethodEvents;
 use BWC\Component\JwtApi\HandlerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -52,8 +51,6 @@ class MethodHandler implements HandlerInterface
 
         $context->setRequestJwt($requestJwt);
 
-        $this->checkSubjectBearer($context);
-
         $method = $this->getMethod($requestJwt->getMethod());
 
         if ($this->dispatchBeforeHandle($context, $method)) {
@@ -80,20 +77,6 @@ class MethodHandler implements HandlerInterface
         $this->methods[$methodName] = $method;
     }
 
-
-    /**
-     * @param JwtContext $context
-     * @throws \RuntimeException
-     */
-    protected function checkSubjectBearer(JwtContext $context)
-    {
-        if ($context->getBearer()) {
-            if ($context->getRequestJwt()->getSubject()) {
-                throw new \RuntimeException('Subject can not be specified if bearer is present');
-            }
-            $context->getRequestJwt()->setSubject($context->getBearer()->getSubject());
-        }
-    }
 
     /**
      * @param string $methodName

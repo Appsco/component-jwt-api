@@ -2,7 +2,7 @@
 
 namespace BWC\Component\JwtApi\Context;
 
-use BWC\Component\JwtApi\Bearer\BearerProviderInterface;
+use BWC\Component\JwtApi\Context\Bearer\BearerProviderInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,10 +13,15 @@ class JwtContextManager implements JwtContextManagerInterface
     protected $bearerProvider;
 
 
+
+    /**
+     * @param BearerProviderInterface $bearerProvider
+     */
     public function __construct(BearerProviderInterface $bearerProvider)
     {
         $this->bearerProvider = $bearerProvider;
     }
+
 
 
     /**
@@ -48,6 +53,10 @@ class JwtContextManager implements JwtContextManagerInterface
      */
     public function send(JwtContext $context)
     {
+        if (!$context->getResponseBindingType()) {
+            $this->setResponseBindingType($context);
+        }
+
         switch ($context->getResponseBindingType()) {
 
             case JwtBindingType::HTTP_REDIRECT:
@@ -66,6 +75,44 @@ class JwtContextManager implements JwtContextManagerInterface
 
 
     /**
+     * Sets $context responseBindingType
+     * @param JwtContext $context
+     * @return void
+     */
+    protected function setResponseBindingType(JwtContext $context)
+    {
+        if ($context->getBearer()) {
+            if (strlen($context->getResponseToken()) > 1200) {
+                $context->setResponseBindingType(JwtBindingType::HTTP_POST);
+            } else {
+                $context->setResponseBindingType(JwtBindingType::HTTP_REDIRECT);
+            }
+        } else {
+            $context->setResponseBindingType(JwtBindingType::CONTENT);
+        }
+    }
+
+
+    /**
+     * @param JwtContext $context
+     * @return string
+     * @throws \RuntimeException
+     */
+    protected function getReplyUrl(JwtContext $context)
+    {
+        $url = $context->getDestinationUrl();
+        if (!$url && $methodJwt = $context->getRequestJwtAsMethodJwt()) {
+            $url = $methodJwt->getReplyTo();
+        }
+        if (!$url) {
+            throw new \RuntimeException('Missing destination url');
+        }
+
+        return $url;
+    }
+
+
+    /**
      * @param JwtContext $context
      * @return Response
      */
@@ -76,16 +123,11 @@ class JwtContextManager implements JwtContextManagerInterface
 
     /**
      * @param JwtContext $context
-     * @throws \InvalidArgumentException
      * @return Response
      */
     protected function sendRedirect(JwtContext $context)
     {
-        if (!$context->getDestinationUrl()) {
-            throw new \InvalidArgumentException('Missing destination url');
-        }
-
-        $url = $context->getDestinationUrl();
+        $url = $this->getReplyUrl($context);
         if (($pos = strpos($url, '?')) !== false) {
             $url = substr($url, 0, $pos);
         }
@@ -103,11 +145,7 @@ class JwtContextManager implements JwtContextManagerInterface
      */
     protected function sendPost(JwtContext $context)
     {
-        if (!$context->getDestinationUrl()) {
-            throw new \InvalidArgumentException('Missing destination url');
-        }
-
-        $url = htmlentities($context->getDestinationUrl());
+        $url = htmlentities($this->getReplyUrl($context));
         $token = htmlentities($context->getResponseToken());
 
         $html = <<<EOT

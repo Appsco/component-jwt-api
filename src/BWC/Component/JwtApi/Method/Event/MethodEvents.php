@@ -1,6 +1,6 @@
 <?php
 
-namespace BWC\Component\JwtApi\Event;
+namespace BWC\Component\JwtApi\Method\Event;
 
 final class MethodEvents
 {

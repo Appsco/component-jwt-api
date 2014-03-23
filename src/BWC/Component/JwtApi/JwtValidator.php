@@ -9,16 +9,21 @@ use BWC\Share\Sys\DateTime;
 
 class JwtValidator implements JwtValidatorInterface
 {
-    const MAX_ISSUED_TIME_DIFFERENCE = 120;
-
     /** @var  Encoder */
     protected $jwtEncoder;
 
+    /** @var  int */
+    protected $maxIssuedTimeDifference;
 
 
-    public function __construct(Encoder $jwtEncoder)
+    /**
+     * @param Encoder $jwtEncoder
+     * @param int $maxIssuedTimeDifference
+     */
+    public function __construct(Encoder $jwtEncoder, $maxIssuedTimeDifference = 120)
     {
         $this->jwtEncoder = $jwtEncoder;
+        $this->maxIssuedTimeDifference = intval($maxIssuedTimeDifference);
     }
 
 
@@ -42,7 +47,7 @@ class JwtValidator implements JwtValidatorInterface
     protected function verifyIssuedTime(JwtReceived $jwt)
     {
         $delta = abs(DateTime::now() - $jwt->getIssuedAt());
-        if ($delta > self::MAX_ISSUED_TIME_DIFFERENCE) {
+        if ($delta > $this->maxIssuedTimeDifference) {
             throw new JwtException('Token too old');
         }
     }

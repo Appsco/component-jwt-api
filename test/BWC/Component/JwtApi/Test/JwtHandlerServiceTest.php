@@ -26,6 +26,7 @@ class JwtHandlerServiceTest extends \PHPUnit_Framework_TestCase
         $keyProviderMock = $this->getKeyProviderMock();
         $validatorMock = $this->getValidatorMock();
         $handlerMock = $this->getHandlerMock();
+        $subjectProviderMock = $this->getSubjectProviderMock();
 
         $expectedJwt = new JwtReceived(
                 $expectedSigningInput = 'signingInput',
@@ -35,11 +36,13 @@ class JwtHandlerServiceTest extends \PHPUnit_Framework_TestCase
 
         $expectedJoseResult = new Jwt();
 
+        $expectedBearer = 'bearer';
+
         $contextManagerMock->expects($this->once())
             ->method('receive')
             ->with($request)
             ->will($this->returnValue(
-                $expectedContext = new JwtContext($request, JwtBindingType::HTTP_REDIRECT, $expectedJwtString, null)
+                $expectedContext = new JwtContext($request, JwtBindingType::HTTP_REDIRECT, $expectedJwtString, $expectedBearer)
             ));
 
         $encoderMock->expects($this->once())
@@ -50,12 +53,17 @@ class JwtHandlerServiceTest extends \PHPUnit_Framework_TestCase
 
         $keyProviderMock->expects($this->once())
             ->method('getKeys')
-            ->with($expectedJwt)
+            ->with($expectedContext)
             ->will($this->returnValue($expectedKeys = array('key1', 'key2')));
 
         $validatorMock->expects($this->once())
             ->method('validate')
             ->with($expectedJwt, $expectedKeys);
+
+        $subjectProviderMock->expects($this->once())
+            ->method('getSubject')
+            ->with($expectedContext)
+            ->will($this->returnValue($expectedSubject = 'subject'));
 
         $expectedResponseJwt = new Jwt();
 
@@ -74,12 +82,20 @@ class JwtHandlerServiceTest extends \PHPUnit_Framework_TestCase
             ->with($expectedJoseResult, $expectedKeys[0])
             ->will($this->returnValue($expectedResultToken = 'result_token'));
 
+        $expectedResponse = new Response($expectedResultToken);
+
         $contextManagerMock->expects($this->once())
             ->method('send')
             ->with($expectedContext)
-            ->will($this->returnValue($expectedResponse = new Response($expectedResultToken)));
+            ->will($this->returnCallback(function(JwtContext $context) use ($expectedResponse, $expectedJwt, $expectedSubject)
+                {
+                    $this->assertEquals($expectedJwt, $context->getRequestJwt());
+                    $this->assertEquals($expectedSubject, $context->getSubject());
 
-        $handlerService = new JwtHandlerService($contextManagerMock, $encoderMock, $keyProviderMock, $validatorMock);
+                    return $expectedResponse;
+                }));
+
+        $handlerService = new JwtHandlerService($contextManagerMock, $encoderMock, $keyProviderMock, $validatorMock, $subjectProviderMock);
         $handlerService->addHandler($expectedType, $handlerMock);
 
         $response = $handlerService->handle($request);
@@ -129,6 +145,14 @@ class JwtHandlerServiceTest extends \PHPUnit_Framework_TestCase
     protected function getHandlerMock()
     {
         return $this->getMock('BWC\Component\JwtApi\HandlerInterface');
+    }
+
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject|\BWC\Component\JwtApi\Context\Subject\SubjectProviderInterface
+     */
+    protected function getSubjectProviderMock()
+    {
+        return $this->getMock('BWC\Component\JwtApi\Context\Subject\SubjectProviderInterface');
     }
 
 } 

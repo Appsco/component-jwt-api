@@ -4,6 +4,7 @@ namespace BWC\Component\JwtApi;
 
 use BWC\Component\JwtApi\Context\JwtContext;
 use BWC\Component\JwtApi\Context\JwtContextManagerInterface;
+use BWC\Component\JwtApi\Context\Subject\SubjectProviderInterface;
 use BWC\Component\JwtApi\KeyProvider\KeyProviderInterface;
 use BWC\Component\Jwe\EncoderInterface;
 use BWC\Component\Jwe\Jwt;
@@ -28,6 +29,9 @@ class JwtHandlerService implements JwtHandlerServiceInterface
      */
     protected $validator;
 
+    /** @var SubjectProviderInterface  */
+    protected $subjectProvider;
+
     /**
      * payloadType => HandlerInterface
      * @var HandlerInterface[]
@@ -40,17 +44,20 @@ class JwtHandlerService implements JwtHandlerServiceInterface
      * @param EncoderInterface $jwtEncoder
      * @param KeyProviderInterface $keyProvider
      * @param JwtValidatorInterface $validator
+     * @param SubjectProviderInterface $subjectProvider
      */
     public function __construct(
             JwtContextManagerInterface $contextManager,
             EncoderInterface $jwtEncoder,
             KeyProviderInterface $keyProvider,
-            JwtValidatorInterface $validator
+            JwtValidatorInterface $validator,
+            SubjectProviderInterface $subjectProvider
     ) {
         $this->contextManager = $contextManager;
         $this->jwtEncoder = $jwtEncoder;
         $this->keyProvider = $keyProvider;
         $this->validator = $validator;
+        $this->subjectProvider = $subjectProvider;
     }
 
 
@@ -81,11 +88,13 @@ class JwtHandlerService implements JwtHandlerServiceInterface
                 $this->decodeJwtString($context->getRequestJwtToken())
         );
 
-        $handler = $this->getHandler($context->getRequestJwt());
-
         $keys = $this->getKeys($context);
 
         $this->validateJwt($context->getRequestJwt(), $keys);
+
+        $this->setSubject($context);
+
+        $handler = $this->getHandler($context->getRequestJwt());
 
         $this->handleJwt($handler, $context);
 
@@ -150,6 +159,14 @@ class JwtHandlerService implements JwtHandlerServiceInterface
         $this->validator->validate($jwt, $keys);
     }
 
+    /**
+     * @param JwtContext $context
+     * @return void
+     */
+    protected function setSubject(JwtContext $context)
+    {
+        $context->setSubject($this->subjectProvider->getSubject($context));
+    }
 
     /**
      * @param HandlerInterface $handler

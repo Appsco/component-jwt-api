@@ -1,6 +1,6 @@
 <?php
 
-namespace BWC\Component\JwtApi\Bearer;
+namespace BWC\Component\JwtApi\Context\Bearer;
 
 use Symfony\Component\HttpFoundation\Request;
 
@@ -8,7 +8,7 @@ class NullBearerProvider implements BearerProviderInterface
 {
     /**
      * @param Request $request
-     * @return BearerInterface|null
+     * @return null
      */
     public function getBearer(Request $request)
     {

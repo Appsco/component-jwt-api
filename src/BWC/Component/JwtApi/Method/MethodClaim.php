@@ -4,11 +4,15 @@ namespace BWC\Component\JwtApi\Method;
 
 final class MethodClaim
 {
-    const METHOD = 'appsco_mtd';
+    const INSTANCE = 'inst';
 
-    const DATA = 'appsco_data';
+    const METHOD = 'mtd';
 
-    const IN_RESPONSE_TO = 'appsco_inr';
+    const DATA = 'data';
+
+    const IN_RESPONSE_TO = 'inr';
+
+    const REPLY_TO = 'rply';
 
     private function __construct() { }
 } 

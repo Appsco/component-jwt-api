@@ -1,31 +1,27 @@
 <?php
 
-namespace BWC\Component\JwtApi\Bearer;
+namespace BWC\Component\JwtApi\Context\Bearer;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\SecurityContextInterface;
 
-class SecurityContextBearerProvider implements BearerProviderInterface
+class UserSecurityContextBearerProvider implements BearerProviderInterface
 {
     /** @var  SecurityContextInterface */
     protected $securityContext;
 
-    /** @var  string */
-    protected $userBearerClass;
 
 
-
-    public function __construct(SecurityContextInterface $securityContext, $userBearerClass)
+    public function __construct(SecurityContextInterface $securityContext)
     {
         $this->securityContext = $securityContext;
-        $this->userBearerClass = $userBearerClass;
     }
 
 
 
     /**
      * @param Request $request
-     * @return BearerInterface|null
+     * @return mixed|null
      */
     public function getBearer(Request $request)
     {
@@ -35,13 +31,8 @@ class SecurityContextBearerProvider implements BearerProviderInterface
         }
 
         $user = $token->getUser();
-        if (null == $user) {
-            return null;
-        }
 
-        $class = $this->userBearerClass;
-
-        return new $class($user);
+        return $user;
     }
 
 } 

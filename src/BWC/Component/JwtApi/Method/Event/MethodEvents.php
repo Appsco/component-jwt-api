@@ -8,6 +8,7 @@ final class MethodEvents
 
     const AFTER_HANDLE = 'bwc_component_jwt_api.method.after_handle';
 
+    const ERROR = 'bwc_component_jwt_api.method.error';
 
     private function __construct() { }
 } 

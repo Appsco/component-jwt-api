@@ -140,4 +140,21 @@ class MethodJwt extends Jwt
         return $this->get(MethodClaim::REPLY_TO);
     }
 
+    /**
+     * @param string $exception
+     * @return $this|MethodJwt
+     */
+    public function setException($exception)
+    {
+        return $this->set(MethodClaim::EXCEPTION, $exception);
+    }
+
+    /**
+     * @return string
+     */
+    public function getException()
+    {
+        return $this->get(MethodClaim::EXCEPTION);
+    }
+
 }

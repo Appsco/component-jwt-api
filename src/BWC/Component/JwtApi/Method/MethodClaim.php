@@ -14,5 +14,7 @@ final class MethodClaim
 
     const REPLY_TO = 'rply';
 
+    const EXCEPTION = 'exc';
+
     private function __construct() { }
 } 

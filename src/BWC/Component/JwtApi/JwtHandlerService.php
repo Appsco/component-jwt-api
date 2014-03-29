@@ -180,8 +180,10 @@ class JwtHandlerService implements JwtHandlerServiceInterface
 
     protected function encode(JwtContext $context, array $keys)
     {
-        $context->setResponseToken(
-            $this->jwtEncoder->encode($context->getResponseJwt(), array_shift($keys))
-        );
+        if ($context->getResponseJwt()) {
+            $context->setResponseToken(
+                $this->jwtEncoder->encode($context->getResponseJwt(), array_shift($keys))
+            );
+        }
     }
 } 

@@ -53,14 +53,24 @@ class MethodHandler implements HandlerInterface
 
         $method = $this->getMethod($requestJwt->getMethod());
 
-        if ($this->dispatchBeforeHandle($context, $method)) {
+        try {
 
-            return;
+            if ($this->dispatchBeforeHandle($context, $method)) {
+
+                return;
+            }
+
+            $method->handle($context);
+
+            $this->dispatchAfterHandle($context, $method);
+
+        } catch (\Exception $ex) {
+
+            $this->dispatchError($context, $method);
+
+            $responseJwt = MethodJwt::create($requestJwt->getAudience(), null, $requestJwt->getMethod(), null, $requestJwt->getJwtId());
+            $responseJwt->setException($ex);
         }
-
-        $method->handle($context);
-
-        $this->dispatchAfterHandle($context, $method);
     }
 
 
@@ -124,6 +134,19 @@ class MethodHandler implements HandlerInterface
         if ($this->eventDispatcher) {
             $event = new MethodEvent($context, $method);
             $this->eventDispatcher->dispatch(MethodEvents::AFTER_HANDLE, $event);
+        }
+    }
+
+    /**
+     * @param JwtContext $context
+     * @param MethodInterface $method
+     * @return void
+     */
+    protected function dispatchError(JwtContext $context, MethodInterface $method)
+    {
+        if ($this->eventDispatcher) {
+            $event = new MethodEvent($context, $method);
+            $this->eventDispatcher->dispatch(MethodEvents::ERROR, $event);
         }
     }
 

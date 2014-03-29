@@ -132,7 +132,9 @@ class JwtContextManager implements JwtContextManagerInterface
             $url = substr($url, 0, $pos);
         }
 
-        $url = $url.'?jwt='.$context->getResponseToken();
+        if ($token = $context->getResponseToken()) {
+            $url = $url.'?jwt='.$token;
+        }
 
         return new RedirectResponse($url);
     }

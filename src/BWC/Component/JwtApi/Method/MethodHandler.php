@@ -69,7 +69,10 @@ class MethodHandler implements HandlerInterface
             $this->dispatchError($context, $method);
 
             $responseJwt = MethodJwt::create($requestJwt->getAudience(), null, $requestJwt->getMethod(), null, $requestJwt->getJwtId());
-            $responseJwt->setException($ex);
+            $responseJwt->setException(sprintf('%s: %s', join('', array_slice(explode('\\', get_class($ex)), -1)), $ex->getMessage()));
+            $responseJwt->setReplyTo($requestJwt->getReplyTo());
+
+            $context->setResponseJwt($responseJwt);
         }
     }
 

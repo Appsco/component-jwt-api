@@ -48,7 +48,7 @@ class MethodJwt extends Jwt
 
     public function __construct(array $header = array(), array $payload = array())
     {
-        parent::__construct(array(), $payload);
+        parent::__construct($header, $payload);
     }
 
 

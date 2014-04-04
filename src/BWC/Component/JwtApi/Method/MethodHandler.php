@@ -3,8 +3,8 @@
 namespace BWC\Component\JwtApi\Method;
 
 use BWC\Component\JwtApi\Context\JwtContext;
-use BWC\Component\JwtApi\Method\Event\MethodEvent;
-use BWC\Component\JwtApi\Method\Event\MethodEvents;
+use BWC\Component\JwtApi\Event\Method\MethodEvent;
+use BWC\Component\JwtApi\Event\Method\MethodEvents;
 use BWC\Component\JwtApi\HandlerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 

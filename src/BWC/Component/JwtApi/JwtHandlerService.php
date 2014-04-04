@@ -5,10 +5,13 @@ namespace BWC\Component\JwtApi;
 use BWC\Component\JwtApi\Context\JwtContext;
 use BWC\Component\JwtApi\Context\JwtContextManagerInterface;
 use BWC\Component\JwtApi\Context\Subject\SubjectProviderInterface;
+use BWC\Component\JwtApi\Event\AfterReceive;
+use BWC\Component\JwtApi\Event\Events;
 use BWC\Component\JwtApi\KeyProvider\KeyProviderInterface;
 use BWC\Component\Jwe\EncoderInterface;
 use BWC\Component\Jwe\Jwt;
 use BWC\Component\Jwe\JwtReceived;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 
@@ -32,6 +35,9 @@ class JwtHandlerService implements JwtHandlerServiceInterface
     /** @var SubjectProviderInterface  */
     protected $subjectProvider;
 
+    /** @var null|\Symfony\Component\EventDispatcher\EventDispatcherInterface  */
+    protected $dispatcher;
+
     /**
      * payloadType => HandlerInterface
      * @var HandlerInterface[]
@@ -45,19 +51,22 @@ class JwtHandlerService implements JwtHandlerServiceInterface
      * @param KeyProviderInterface $keyProvider
      * @param JwtValidatorInterface $validator
      * @param SubjectProviderInterface $subjectProvider
+     * @param null|\Symfony\Component\EventDispatcher\EventDispatcherInterface $dispatcher
      */
     public function __construct(
             JwtContextManagerInterface $contextManager,
             EncoderInterface $jwtEncoder,
             KeyProviderInterface $keyProvider,
             JwtValidatorInterface $validator,
-            SubjectProviderInterface $subjectProvider
+            SubjectProviderInterface $subjectProvider,
+            EventDispatcherInterface $dispatcher = null
     ) {
         $this->contextManager = $contextManager;
         $this->jwtEncoder = $jwtEncoder;
         $this->keyProvider = $keyProvider;
         $this->validator = $validator;
         $this->subjectProvider = $subjectProvider;
+        $this->dispatcher = $dispatcher;
     }
 
 
@@ -77,16 +86,18 @@ class JwtHandlerService implements JwtHandlerServiceInterface
 
     /**
      * @param Request $request
-     * @throws JwtException
+     * @throws \Exception
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function handle(Request $request)
     {
-        $context = $this->contextManager->receive($request);
+        $context = $this->receive($request);
 
         $context->setRequestJwt(
                 $this->decodeJwtString($context->getRequestJwtToken())
         );
+
+        $this->afterReceive($request, $context);
 
         $keys = $this->getKeys($context);
 
@@ -105,6 +116,30 @@ class JwtHandlerService implements JwtHandlerServiceInterface
         return $response;
     }
 
+
+    /**
+     * @param Request $request
+     * @param JwtContext $context
+     */
+    protected function afterReceive(Request $request, JwtContext $context = null)
+    {
+        if ($this->dispatcher) {
+            $event = new AfterReceive($request, $context);
+            $this->dispatcher->dispatch(Events::AFTER_RECEIVE, $event);
+        }
+    }
+
+
+    /**
+     * @param Request $request
+     * @return JwtContext
+     */
+    protected function receive(Request $request)
+    {
+        $context = $this->contextManager->receive($request);
+
+        return $context;
+    }
 
     /**
      * @param string $jwtString

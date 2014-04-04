@@ -7,7 +7,7 @@ use BWC\Component\JwtApi\Method\MethodJwt;
 use Symfony\Component\HttpFoundation\Request;
 
 
-class JwtContext
+class JwtContext implements \JsonSerializable
 {
     /** @var \Symfony\Component\HttpFoundation\Request  */
     protected $request;
@@ -248,5 +248,24 @@ class JwtContext
         return @$this->options[$name];
     }
 
+    /**
+     * (PHP 5 &gt;= 5.4.0)<br/>
+     * Specify data which should be serialized to JSON
+     * @link http://php.net/manual/en/jsonserializable.jsonserialize.php
+     * @return mixed data which can be serialized by <b>json_encode</b>,
+     * which is a value of any type other than a resource.
+     */
+    public function jsonSerialize()
+    {
+        return array(
+            'requestToken' => $this->requestJwtToken,
+            'requestJwt' => $this->requestJwt,
+            'responseJwt' => $this->responseJwt,
+            'destinationUrl' => $this->destinationUrl,
+            'responseBindingType' => $this->responseBindingType,
+            'responseToken' => $this->responseToken
+        );
+    }
 
-} 
+
+}

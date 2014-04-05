@@ -2,7 +2,6 @@
 
 namespace BWC\Component\JwtApi\Context;
 
-use BWC\Component\Jwe\Jwt;
 use BWC\Component\JwtApi\Method\MethodJwt;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -21,13 +20,13 @@ class JwtContext implements \JsonSerializable
     /** @var  mixed|null */
     protected $bearer;
 
-    /** @var  Jwt */
+    /** @var  MethodJwt */
     protected $requestJwt;
 
     /** @var  mixed|null */
     protected $subject;
 
-    /** @var  Jwt */
+    /** @var  \BWC\Component\JwtApi\Method\MethodJwt */
     protected $responseJwt;
 
     /** @var  null|string */
@@ -48,18 +47,16 @@ class JwtContext implements \JsonSerializable
      * @param \Symfony\Component\HttpFoundation\Request $request
      * @param string $requestBindingType
      * @param string $requestJwtToken
-     * @param mixed|null $bearer
      * @throws \InvalidArgumentException
      */
-    public function __construct(Request $request, $requestBindingType, $requestJwtToken, $bearer = null)
+    public function __construct(Request $request, $requestBindingType, $requestJwtToken)
     {
-        if (!JwtBindingType::isValid($requestBindingType)) {
+        if (!JwtBindingTypes::isValid($requestBindingType)) {
             throw new \InvalidArgumentException('Invalid request binding type');
         }
         $this->request = $request;
         $this->requestBindingType = $requestBindingType;
         $this->requestJwtToken = $requestJwtToken;
-        $this->bearer = $bearer;
     }
 
 
@@ -70,14 +67,6 @@ class JwtContext implements \JsonSerializable
     public function getRequest()
     {
         return $this->request;
-    }
-
-    /**
-     * @return mixed|null
-     */
-    public function getBearer()
-    {
-        return $this->bearer;
     }
 
     /**
@@ -98,10 +87,10 @@ class JwtContext implements \JsonSerializable
 
 
     /**
-     * @param \BWC\Component\Jwe\Jwt $requestJwt
+     * @param \BWC\Component\JwtApi\Method\MethodJwt $requestJwt
      * @return JwtContext|$this
      */
-    public function setRequestJwt(Jwt $requestJwt)
+    public function setRequestJwt(MethodJwt $requestJwt)
     {
         $this->requestJwt = $requestJwt;
 
@@ -109,7 +98,7 @@ class JwtContext implements \JsonSerializable
     }
 
     /**
-     * @return \BWC\Component\Jwe\Jwt
+     * @return \BWC\Component\JwtApi\Method\MethodJwt
      */
     public function getRequestJwt()
     {
@@ -117,15 +106,22 @@ class JwtContext implements \JsonSerializable
     }
 
     /**
-     * @return MethodJwt|null
+     * @return mixed|null
      */
-    public function getRequestJwtAsMethodJwt()
+    public function getBearer()
     {
-        if ($this->requestJwt instanceof MethodJwt) {
-            return $this->requestJwt;
-        }
+        return $this->bearer;
+    }
 
-        return null;
+    /**
+     * @param mixed|null $bearer
+     * @return JwtContext|$this
+     */
+    public function setBearer($bearer)
+    {
+        $this->bearer = $bearer;
+
+        return $this;
     }
 
     /**
@@ -148,15 +144,15 @@ class JwtContext implements \JsonSerializable
     }
 
     /**
-     * @param \BWC\Component\Jwe\Jwt $responseJwt
+     * @param \BWC\Component\JwtApi\Method\MethodJwt $responseJwt
      */
-    public function setResponseJwt($responseJwt)
+    public function setResponseJwt(MethodJwt $responseJwt)
     {
         $this->responseJwt = $responseJwt;
     }
 
     /**
-     * @return \BWC\Component\Jwe\Jwt
+     * @return \BWC\Component\JwtApi\Method\MethodJwt
      */
     public function getResponseJwt()
     {
@@ -186,7 +182,7 @@ class JwtContext implements \JsonSerializable
      */
     public function setResponseBindingType($responseBindingType)
     {
-        if (!JwtBindingType::isValid($responseBindingType)) {
+        if (!JwtBindingTypes::isValid($responseBindingType)) {
             throw new \InvalidArgumentException('Invalid binding type');
         }
         $this->responseBindingType = $responseBindingType;
@@ -248,6 +244,7 @@ class JwtContext implements \JsonSerializable
         return @$this->options[$name];
     }
 
+
     /**
      * (PHP 5 &gt;= 5.4.0)<br/>
      * Specify data which should be serialized to JSON
@@ -258,12 +255,13 @@ class JwtContext implements \JsonSerializable
     public function jsonSerialize()
     {
         return array(
+            'requestBindingType' => $this->requestBindingType,
             'requestToken' => $this->requestJwtToken,
             'requestJwt' => $this->requestJwt,
             'responseJwt' => $this->responseJwt,
             'destinationUrl' => $this->destinationUrl,
             'responseBindingType' => $this->responseBindingType,
-            'responseToken' => $this->responseToken
+            'responseToken' => $this->responseToken,
         );
     }
 

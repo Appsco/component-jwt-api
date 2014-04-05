@@ -4,7 +4,7 @@ namespace BWC\Component\JwtApi\Test\Client;
 
 use BWC\Component\Jwe\JwsHeader;
 use BWC\Component\JwtApi\Client\BearerClient;
-use BWC\Component\JwtApi\Context\JwtBindingType;
+use BWC\Component\JwtApi\Context\JwtBindingTypes;
 use BWC\Component\JwtApi\Method\MethodJwt;
 use Symfony\Component\DomCrawler\Crawler;
 
@@ -61,7 +61,7 @@ class BearerClientTest extends \PHPUnit_Framework_TestCase
                 $encoderMock
         );
 
-        $response = $client->send(JwtBindingType::HTTP_REDIRECT, $jwt);
+        $response = $client->send(JwtBindingTypes::HTTP_REDIRECT, $jwt);
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $response);
         $this->assertStringStartsWith($expectedTargetUrl, $response->getTargetUrl());
@@ -94,7 +94,7 @@ class BearerClientTest extends \PHPUnit_Framework_TestCase
                 $encoderMock
         );
 
-        $response = $client->send(JwtBindingType::HTTP_POST, $jwt);
+        $response = $client->send(JwtBindingTypes::HTTP_POST, $jwt);
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $response);
         $this->assertNotInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $response);

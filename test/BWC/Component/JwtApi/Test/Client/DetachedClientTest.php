@@ -5,8 +5,8 @@ namespace BWC\Component\JwtApi\Test\Client;
 use BWC\Component\Jwe\JwsHeader;
 use BWC\Component\Jwe\Jwt;
 use BWC\Component\JwtApi\Client\DetachedClient;
-use BWC\Component\JwtApi\Context\JwtBindingType;
-use BWC\Component\JwtApi\Method\MethodClaim;
+use BWC\Component\JwtApi\Context\JwtBindingTypes;
+use BWC\Component\JwtApi\Method\MethodClaims;
 use BWC\Component\JwtApi\Method\MethodJwt;
 use BWC\Share\Net\HttpStatusCode;
 
@@ -31,7 +31,7 @@ class DetachedClientTest extends \PHPUnit_Framework_TestCase
         $expectedKey ='key';
 
         $expectedResponseToken = 'response.jwt.token';
-        $expectedResponseJwt = new Jwt(array('bar'=>456), array(MethodClaim::DATA => $expectedData = 'data'));
+        $expectedResponseJwt = new Jwt(array('bar'=>456), array(MethodClaims::DATA => $expectedData = 'data'));
 
         $jwtRequest = new MethodJwt($expectedHeader = array(JwsHeader::TYPE => 'jose'), $expectedPayload = array('foo'=>123));
 
@@ -56,7 +56,7 @@ class DetachedClientTest extends \PHPUnit_Framework_TestCase
 
         $client = new DetachedClient($httpClientMock, $expectedIssuer, $expectedTargetUrl, $expectedKey, $encoderMock);
 
-        $response = $client->send(JwtBindingType::HTTP_POST, $jwtRequest);
+        $response = $client->send(JwtBindingTypes::HTTP_POST, $jwtRequest);
 
         $this->assertInstanceOf('BWC\Component\JwtApi\Method\MethodJwt', $response);
         $this->assertEquals('JWT', $response->headerGet(JwsHeader::TYPE));
@@ -75,7 +75,7 @@ class DetachedClientTest extends \PHPUnit_Framework_TestCase
         $expectedKey ='key';
 
         $expectedResponseToken = 'response.jwt.token';
-        $expectedResponseJwt = new Jwt(array('bar'=>456), array(MethodClaim::DATA => $expectedData = 'data'));
+        $expectedResponseJwt = new Jwt(array('bar'=>456), array(MethodClaims::DATA => $expectedData = 'data'));
 
         $jwtRequest = new MethodJwt($expectedHeader = array(JwsHeader::TYPE => 'jose'), $expectedPayload = array('foo'=>123));
 
@@ -100,7 +100,7 @@ class DetachedClientTest extends \PHPUnit_Framework_TestCase
 
         $client = new DetachedClient($httpClientMock, $expectedIssuer, $expectedTargetUrl, $expectedKey, $encoderMock);
 
-        $response = $client->send(JwtBindingType::HTTP_REDIRECT, $jwtRequest);
+        $response = $client->send(JwtBindingTypes::HTTP_REDIRECT, $jwtRequest);
 
         $this->assertInstanceOf('BWC\Component\JwtApi\Method\MethodJwt', $response);
         $this->assertEquals('JWT', $response->headerGet(JwsHeader::TYPE));
@@ -140,7 +140,7 @@ class DetachedClientTest extends \PHPUnit_Framework_TestCase
 
         $client = new DetachedClient($httpClientMock, $expectedIssuer, $expectedTargetUrl, $expectedKey, $encoderMock);
 
-        $response = $client->send(JwtBindingType::HTTP_REDIRECT, $jwtRequest);
+        $response = $client->send(JwtBindingTypes::HTTP_REDIRECT, $jwtRequest);
 
         $this->assertInstanceOf('BWC\Component\JwtApi\Method\MethodJwt', $response);
         $this->assertEquals('JWT', $response->headerGet(JwsHeader::TYPE));
@@ -151,7 +151,7 @@ class DetachedClientTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @expectedException \BWC\Component\JwtApi\Method\RemoteMethodException
+     * @expectedException \BWC\Component\JwtApi\Error\RemoteMethodException
      * @expectedExceptionMessage error 123
      */
     public function shouldThrowRemoteExceptionIfGivenInResponseJwt()
@@ -161,7 +161,7 @@ class DetachedClientTest extends \PHPUnit_Framework_TestCase
         $expectedKey ='key';
 
         $expectedResponseToken = 'response.jwt.token';
-        $expectedResponseJwt = new Jwt(array(), array(MethodClaim::EXCEPTION => $expectedException = 'error 123'));
+        $expectedResponseJwt = new Jwt(array(), array(MethodClaims::EXCEPTION => $expectedException = 'error 123'));
 
         $jwtRequest = new MethodJwt($expectedHeader = array(JwsHeader::TYPE => 'jose'), $expectedPayload = array('foo'=>123));
 
@@ -186,7 +186,7 @@ class DetachedClientTest extends \PHPUnit_Framework_TestCase
 
         $client = new DetachedClient($httpClientMock, $expectedIssuer, $expectedTargetUrl, $expectedKey, $encoderMock);
 
-        $client->send(JwtBindingType::HTTP_REDIRECT, $jwtRequest);
+        $client->send(JwtBindingTypes::HTTP_REDIRECT, $jwtRequest);
     }
 
     /**
@@ -201,7 +201,7 @@ class DetachedClientTest extends \PHPUnit_Framework_TestCase
         $expectedKey ='key';
 
         $expectedResponseToken = 'response.jwt.token';
-        $expectedResponseJwt = new Jwt(array(), array(MethodClaim::EXCEPTION => $expectedException = 'error 123'));
+        $expectedResponseJwt = new Jwt(array(), array(MethodClaims::EXCEPTION => $expectedException = 'error 123'));
 
         $jwtRequest = new MethodJwt($expectedHeader = array(JwsHeader::TYPE => 'jose'), $expectedPayload = array('foo'=>123));
 
@@ -224,7 +224,7 @@ class DetachedClientTest extends \PHPUnit_Framework_TestCase
 
         $client = new DetachedClient($httpClientMock, $expectedIssuer, $expectedTargetUrl, $expectedKey, $encoderMock);
 
-        $client->send(JwtBindingType::HTTP_REDIRECT, $jwtRequest);
+        $client->send(JwtBindingTypes::HTTP_REDIRECT, $jwtRequest);
     }
 
 
@@ -249,12 +249,12 @@ class DetachedClientTest extends \PHPUnit_Framework_TestCase
         $expectedData = array(1,2);
         $expectedJwtId = 'jwtID';
 
-        $expectedBinding = JwtBindingType::HTTP_REDIRECT;
+        $expectedBinding = JwtBindingTypes::HTTP_REDIRECT;
 
         $expectedRequestToken = 'sending.jwt.token';
 
         $expectedResponseToken = 'response.jwt.token';
-        $expectedResponseJwt = new Jwt(array(), array(MethodClaim::DATA=>$json));
+        $expectedResponseJwt = new Jwt(array(), array(MethodClaims::DATA=>$json));
 
         $encoderMock = $this->getEncoderMock();
         $encoderMock->expects($this->once())
@@ -321,12 +321,12 @@ class DetachedClientTest extends \PHPUnit_Framework_TestCase
         $expectedData = array(1,2);
         $expectedJwtId = 'jwtID';
 
-        $expectedBinding = JwtBindingType::HTTP_POST;
+        $expectedBinding = JwtBindingTypes::HTTP_POST;
 
         $expectedRequestToken = 'sending.jwt.token';
 
         $expectedResponseToken = 'response.jwt.token';
-        $expectedResponseJwt = new Jwt(array(), array(MethodClaim::DATA=>$json));
+        $expectedResponseJwt = new Jwt(array(), array(MethodClaims::DATA=>$json));
 
         $encoderMock = $this->getEncoderMock();
         $encoderMock->expects($this->once())
@@ -386,7 +386,7 @@ class DetachedClientTest extends \PHPUnit_Framework_TestCase
         $expectedData = array(1,2);
         $expectedJwtId = 'jwtID';
 
-        $expectedBinding = JwtBindingType::HTTP_POST;
+        $expectedBinding = JwtBindingTypes::HTTP_POST;
 
         $expectedRequestToken = 'sending.jwt.token';
 

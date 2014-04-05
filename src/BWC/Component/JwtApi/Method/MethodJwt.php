@@ -6,37 +6,51 @@ use BWC\Component\Jwe\JwtClaim;
 use BWC\Component\Jwe\Jwt;
 use BWC\Share\Sys\DateTime;
 
+
 class MethodJwt extends Jwt
 {
     const PAYLOAD_TYPE = 'bwc-method';
 
 
     /**
-     * @param string $issuer
-     * @param string|null $instance
-     * @param string|null $method
-     * @param mixed $data
-     * @param string|null $inResponseTo
+     * @param Jwt $jwt
      * @return MethodJwt
      */
-    static public function create($issuer, $instance = null, $method = null, $data = null, $inResponseTo = null)
+    public static function createFromJwt(Jwt $jwt)
     {
+        return new MethodJwt($jwt->getHeader(), $jwt->getPayload());
+    }
+
+    /**
+     * @param string $direction
+     * @param string $issuer
+     * @param string $method
+     * @param string|null $instance
+     * @param mixed $data
+     * @param string|null $inResponseTo
+     * @throws \InvalidArgumentException
+     * @return MethodJwt
+     */
+    public static function create($direction, $issuer, $method, $instance = null, $data = null, $inResponseTo = null)
+    {
+        if (!Directions::isValid($direction)) {
+            throw new \InvalidArgumentException(sprintf("Invalid direction value '%s'", $direction));
+        }
         $payload = array(
                 JwtClaim::ISSUER => $issuer,
                 JwtClaim::ISSUED_AT => DateTime::now(),
-                JwtClaim::TYPE => self::PAYLOAD_TYPE
+                JwtClaim::TYPE => self::PAYLOAD_TYPE,
+                MethodClaims::DIRECTION => $direction,
+                MethodClaims::METHOD => $method,
         );
         if ($instance) {
-            $payload[MethodClaim::INSTANCE] = $instance;
-        }
-        if ($method) {
-            $payload[MethodClaim::METHOD] = $method;
+            $payload[MethodClaims::INSTANCE] = $instance;
         }
         if ($data) {
-            $payload[MethodClaim::DATA] = $data;
+            $payload[MethodClaims::DATA] = $data;
         }
         if ($inResponseTo) {
-            $payload[MethodClaim::IN_RESPONSE_TO] = $inResponseTo;
+            $payload[MethodClaims::IN_RESPONSE_TO] = $inResponseTo;
         }
 
         $result = new MethodJwt(array(), $payload);
@@ -59,7 +73,7 @@ class MethodJwt extends Jwt
      */
     public function setInstance($instance)
     {
-        return $this->set(MethodClaim::INSTANCE, $instance);
+        return $this->set(MethodClaims::INSTANCE, $instance);
     }
 
     /**
@@ -67,7 +81,7 @@ class MethodJwt extends Jwt
      */
     public function getInstance()
     {
-        return $this->get(MethodClaim::INSTANCE);
+        return $this->get(MethodClaims::INSTANCE);
     }
 
     /**
@@ -76,7 +90,7 @@ class MethodJwt extends Jwt
      */
     public function setMethod($method)
     {
-        return $this->set(MethodClaim::METHOD, $method);
+        return $this->set(MethodClaims::METHOD, $method);
     }
 
     /**
@@ -84,7 +98,7 @@ class MethodJwt extends Jwt
      */
     public function getMethod()
     {
-        return $this->get(MethodClaim::METHOD);
+        return $this->get(MethodClaims::METHOD);
     }
 
 
@@ -94,7 +108,7 @@ class MethodJwt extends Jwt
      */
     public function setData($data)
     {
-        return $this->set(MethodClaim::DATA, $data);
+        return $this->set(MethodClaims::DATA, $data);
     }
 
     /**
@@ -102,7 +116,7 @@ class MethodJwt extends Jwt
      */
     public function getData()
     {
-        return $this->get(MethodClaim::DATA);
+        return $this->get(MethodClaims::DATA);
     }
 
 
@@ -112,7 +126,7 @@ class MethodJwt extends Jwt
      */
     public function setInResponseTo($inResponseTo)
     {
-        return $this->set(MethodClaim::IN_RESPONSE_TO, $inResponseTo);
+        return $this->set(MethodClaims::IN_RESPONSE_TO, $inResponseTo);
     }
 
     /**
@@ -120,7 +134,7 @@ class MethodJwt extends Jwt
      */
     public function getInResponseTo()
     {
-        return $this->get(MethodClaim::IN_RESPONSE_TO);
+        return $this->get(MethodClaims::IN_RESPONSE_TO);
     }
 
     /**
@@ -129,7 +143,7 @@ class MethodJwt extends Jwt
      */
     public function setReplyTo($replyTo)
     {
-        return $this->set(MethodClaim::REPLY_TO, $replyTo);
+        return $this->set(MethodClaims::REPLY_TO, $replyTo);
     }
 
     /**
@@ -137,7 +151,7 @@ class MethodJwt extends Jwt
      */
     public function getReplyTo()
     {
-        return $this->get(MethodClaim::REPLY_TO);
+        return $this->get(MethodClaims::REPLY_TO);
     }
 
     /**
@@ -146,7 +160,7 @@ class MethodJwt extends Jwt
      */
     public function setException($exception)
     {
-        return $this->set(MethodClaim::EXCEPTION, $exception);
+        return $this->set(MethodClaims::EXCEPTION, $exception);
     }
 
     /**
@@ -154,7 +168,7 @@ class MethodJwt extends Jwt
      */
     public function getException()
     {
-        return $this->get(MethodClaim::EXCEPTION);
+        return $this->get(MethodClaims::EXCEPTION);
     }
 
 }

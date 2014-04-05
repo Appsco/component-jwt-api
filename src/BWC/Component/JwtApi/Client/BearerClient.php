@@ -3,7 +3,7 @@
 namespace BWC\Component\JwtApi\Client;
 
 use BWC\Component\Jwe\EncoderInterface;
-use BWC\Component\JwtApi\Context\JwtBindingType;
+use BWC\Component\JwtApi\Context\JwtBindingTypes;
 use BWC\Component\JwtApi\Method\MethodJwt;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -64,11 +64,11 @@ class BearerClient extends AbstractClient
 
         $token = $this->encoder->encode($jwt, $this->key, $this->getAlgorithm());
 
-        if ($binding == JwtBindingType::HTTP_REDIRECT) {
+        if ($binding == JwtBindingTypes::HTTP_REDIRECT) {
 
             return new RedirectResponse($this->getRedirectUrl().'?jwt='.$token);
 
-        } else if ($binding == JwtBindingType::HTTP_POST) {
+        } else if ($binding == JwtBindingTypes::HTTP_POST) {
 
             return $this->post($this->targetUrl, $token);
 

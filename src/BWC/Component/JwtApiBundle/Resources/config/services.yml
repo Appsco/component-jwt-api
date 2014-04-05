@@ -1,0 +1,104 @@
+parameters:
+    bwc_component_jwt_api.jwt_manager.class: BWC\Component\JwtApi\Manager\JwtManager
+    bwc_component_jwt_api.receiver.class: BWC\Component\JwtApi\Receiver\CompositeReceiver
+    bwc_component_jwt_api.sender.class: BWC\Component\JwtApi\Sender\Sender
+
+    bwc_component_jwt_api.encoder.class: BWC\Component\Jwe\Encoder
+    bwc_component_jwt_api.encoder.decode_class: BWC\Component\JwtApi\Method\MethodJwt
+
+    bwc_component_jwt_api.validator.class: BWC\Component\JwtApi\Validator\CompositeJwtValidator
+    bwc_component_jwt_api.validator.issued_time.class: BWC\Component\JwtApi\Validator\IssuedTimeValidator
+    bwc_component_jwt_api.validator.issued_time.max_time_difference: 120
+    bwc_component_jwt_api.validator.signature.class: BWC\Component\JwtApi\Validator\SignatureValidator
+
+    bwc_component_jwt_api.bearer_provider.user_security_context.class: BWC\Component\JwtApi\Bearer\UserSecurityContextBearerProvider
+
+    bwc_component_jwt_api.subject_provider.null.class: BWC\Component\JwtApi\Subject\NullSubjectProvider
+
+    bwc_component_jwt_api.handler.decoder.class: BWC\Component\JwtApi\Handler\DecoderHandler
+    bwc_component_jwt_api.handler.key_provider.class: BWC\Component\JwtApi\Handler\KeyProviderHandler
+    bwc_component_jwt_api.handler.validator.class: BWC\Component\JwtApi\Handler\ValidatorHandler
+    bwc_component_jwt_api.handler.bearer_provider.class: BWC\Component\JwtApi\Handler\BearerProviderHandler
+    bwc_component_jwt_api.handler.subject_provider.class: BWC\Component\JwtApi\Handler\SubjectProviderHandler
+
+services:
+
+    # MANAGER ------------------------------------------------
+
+    bwc_component_jwt_api.receiver:
+        class: %bwc_component_jwt_api.receiver.class%
+
+    bwc_component_jwt_api.sender:
+        class: %bwc_component_jwt_api.sender.class%
+
+    bwc_component_jwt_api.jwt_manager:
+        class: %bwc_component_jwt_api.jwt_manager.class%
+        arguments: [@bwc_component_jwt_api.receiver, @bwc_component_jwt_api.sender]
+
+
+    # GLOBAL --------------------------------------------------
+
+    bwc_component_jwt_api.encoder:
+        class: %bwc_component_jwt_api.encoder.class%
+
+
+    # VALIDATOR -----------------------------------------------
+
+    bwc_component_jwt_api.validator:
+        class: %bwc_component_jwt_api.validator.class%
+        calls:
+            - [ addValidator, [@bwc_component_jwt_api.validator.issued_time] ]
+            - [ addValidator, [@bwc_component_jwt_api.validator.signature] ]
+
+    bwc_component_jwt_api.validator.issued_time:
+        class: %bwc_component_jwt_api.validator.issued_time.class%
+        arguments: [%bwc_component_jwt_api.validator.issued_time.max_time_difference%]
+
+    bwc_component_jwt_api.validator.signature:
+        class: %bwc_component_jwt_api.validator.signature.class%
+        arguments: [@bwc_component_jwt_api.encoder]
+
+
+    # BEARER PROVIDER -----------------------------------------
+
+    bwc_component_jwt_api.bearer_provider.user_security_context:
+        class: %bwc_component_jwt_api.bearer_provider.user_security_context.class%
+        arguments: []
+
+    # SUBJECT PROVIDER ---------------------------------------
+
+    bwc_component_jwt_api.subject_provider.null:
+        class: %bwc_component_jwt_api.subject_provider.null.class%
+
+
+    # HANDLERS ------------------------------------------------
+
+    bwc_component_jwt_api.handler.decoder:
+        class: %bwc_component_jwt_api.handler.decoder.class%
+        arguments: [@bwc_component_jwt_api.encoder, %bwc_component_jwt_api.encoder.decode_class%]
+        tags:
+            - { name: 'bwc_component_jwt_api.handler', priority: 10 }
+
+    bwc_component_jwt_api.handler.key_provider:
+        class: %bwc_component_jwt_api.handler.key_provider.class%
+        arguments: [~] # TODO factory to set keyProvider
+        tags:
+            - { name: 'bwc_component_jwt_api.handler', priority: 20 }
+
+    bwc_component_jwt_api.handler.validator:
+        class: %bwc_component_jwt_api.handler.validator.class%
+        arguments: [@bwc_component_jwt_api.validator]
+        tags:
+            - { name: 'bwc_component_jwt_api.handler', priority: 30 }
+
+    bwc_component_jwt_api.handler.bearer_provider:
+        class: %bwc_component_jwt_api.handler.bearer_provider.class%
+        arguments: [@bwc_component_jwt_api.bearer_provider.user_security_context]
+        tags:
+            - { name: 'bwc_component_jwt_api.handler', priority: 40 }
+
+    bwc_component_jwt_api.handler.subject_provider:
+        class: %bwc_component_jwt_api.handler.subject_provider.class%
+        arguments: [@bwc_component_jwt_api.subject_provider.null]
+        tags:
+            - { name: 'bwc_component_jwt_api.handler', priority: 50 }

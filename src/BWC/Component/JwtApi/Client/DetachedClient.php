@@ -3,9 +3,9 @@
 namespace BWC\Component\JwtApi\Client;
 
 use BWC\Component\Jwe\EncoderInterface;
-use BWC\Component\JwtApi\Context\JwtBindingType;
+use BWC\Component\JwtApi\Context\JwtBindingTypes;
 use BWC\Component\JwtApi\Method\MethodJwt;
-use BWC\Component\JwtApi\Method\RemoteMethodException;
+use BWC\Component\JwtApi\Error\RemoteMethodException;
 use BWC\Share\Net\HttpClient\HttpClientInterface;
 use BWC\Share\Net\HttpStatusCode;
 
@@ -45,11 +45,11 @@ class DetachedClient extends AbstractClient
 
         $token = $this->encoder->encode($jwt, $this->key, $this->getAlgorithm());
 
-        if ($binding == JwtBindingType::HTTP_POST) {
+        if ($binding == JwtBindingTypes::HTTP_POST) {
 
             $response = $this->httpClient->post($this->targetUrl, array(), array('jwt'=>$token), 'application/jwt');
 
-        } else if ($binding == JwtBindingType::HTTP_REDIRECT) {
+        } else if ($binding == JwtBindingTypes::HTTP_REDIRECT) {
 
             $response = $this->httpClient->get($this->getRedirectUrl(), array('jwt'=>$token));
 

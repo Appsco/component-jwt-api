@@ -5,7 +5,6 @@ namespace BWC\Component\JwtApi\Compiler;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 
@@ -95,7 +94,7 @@ class MethodHandlerCompilerPass implements CompilerPassInterface
 
                 $constrainedService->addMethodCall('addMethod', array(new Reference($id)));
 
-                $originalId = $id;
+                //$originalId = $id;
                 $id = $constrainedServiceId;
 
             } // if requires constraints

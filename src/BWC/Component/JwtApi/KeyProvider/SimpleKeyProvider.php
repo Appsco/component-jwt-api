@@ -2,8 +2,8 @@
 
 namespace BWC\Component\JwtApi\KeyProvider;
 
-use BWC\Component\Jwe\Jwt;
 use BWC\Component\JwtApi\Context\JwtContext;
+
 
 class SimpleKeyProvider implements KeyProviderInterface
 {

@@ -2,16 +2,15 @@
 
 namespace BWC\Component\JwtApi\Client;
 
-use Appsco\My\Api\Model\Order\OrderRequest;
 use BWC\Component\Jwe\Algorithm;
 use BWC\Component\Jwe\EncoderInterface;
-use BWC\Component\JwtApi\Context\JwtBindingType;
-use BWC\Component\JwtApi\Method\MethodJwt;
+use BWC\Component\JwtApi\Context\JwtBindingTypes;
+
 
 abstract class AbstractClient
 {
     /** @var string */
-    protected $defaultBinding = JwtBindingType::HTTP_POST;
+    protected $defaultBinding = JwtBindingTypes::HTTP_POST;
 
     /** @var string */
     protected $algorithm = Algorithm::HS512;
@@ -58,7 +57,7 @@ abstract class AbstractClient
      */
     public function setDefaultBinding($binding)
     {
-        if (!JwtBindingType::isValid($binding)) {
+        if (!JwtBindingTypes::isValid($binding)) {
             throw new \InvalidArgumentException('Invalid binding type '.$binding);
         }
         $this->defaultBinding = $binding;
@@ -138,7 +137,7 @@ abstract class AbstractClient
     protected function checkBinding(&$binding)
     {
         $binding = $binding ? $binding : $this->getDefaultBinding();
-        if (!JwtBindingType::isValid($binding)) {
+        if (!JwtBindingTypes::isValid($binding)) {
             throw new \InvalidArgumentException('Invalid binding type '.$binding);
         }
     }

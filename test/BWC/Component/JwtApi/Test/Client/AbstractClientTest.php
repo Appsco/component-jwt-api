@@ -3,7 +3,7 @@
 namespace BWC\Component\JwtApi\Test\Client;
 
 use BWC\Component\Jwe\Algorithm;
-use BWC\Component\JwtApi\Context\JwtBindingType;
+use BWC\Component\JwtApi\Context\JwtBindingTypes;
 
 
 class AbstractClientTest extends \PHPUnit_Framework_TestCase
@@ -20,7 +20,7 @@ class AbstractClientTest extends \PHPUnit_Framework_TestCase
                 $expectedEncoder = $this->getEncoderMock()
         ));
 
-        $this->assertEquals(JwtBindingType::HTTP_POST, $client->getDefaultBinding());
+        $this->assertEquals(JwtBindingTypes::HTTP_POST, $client->getDefaultBinding());
     }
 
     /**
@@ -36,9 +36,9 @@ class AbstractClientTest extends \PHPUnit_Framework_TestCase
                 $expectedReplyTo = 'reply/to'
         ));
 
-        $client->setDefaultBinding(JwtBindingType::HTTP_REDIRECT);
+        $client->setDefaultBinding(JwtBindingTypes::HTTP_REDIRECT);
 
-        $this->assertEquals(JwtBindingType::HTTP_REDIRECT, $client->getDefaultBinding());
+        $this->assertEquals(JwtBindingTypes::HTTP_REDIRECT, $client->getDefaultBinding());
     }
 
     /**
@@ -149,10 +149,10 @@ class AbstractClientTest extends \PHPUnit_Framework_TestCase
     {
         $client = new AbstractClientMock('issuer', 'targetUrl', 'key', $this->getEncoderMock());
 
-        $binding = JwtBindingType::HTTP_POST;
+        $binding = JwtBindingTypes::HTTP_POST;
         $client->testCheckBinding($binding);
 
-        $this->assertEquals(JwtBindingType::HTTP_POST, $binding);
+        $this->assertEquals(JwtBindingTypes::HTTP_POST, $binding);
     }
 
     /**
@@ -162,10 +162,10 @@ class AbstractClientTest extends \PHPUnit_Framework_TestCase
     {
         $client = new AbstractClientMock('issuer', 'targetUrl', 'key', $this->getEncoderMock());
 
-        $binding = JwtBindingType::HTTP_REDIRECT;
+        $binding = JwtBindingTypes::HTTP_REDIRECT;
         $client->testCheckBinding($binding);
 
-        $this->assertEquals(JwtBindingType::HTTP_REDIRECT, $binding);
+        $this->assertEquals(JwtBindingTypes::HTTP_REDIRECT, $binding);
     }
 
     /**

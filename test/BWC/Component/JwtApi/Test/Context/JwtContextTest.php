@@ -2,7 +2,7 @@
 
 namespace BWC\Component\JwtApi\Test\Context;
 
-use BWC\Component\JwtApi\Context\JwtBindingType;
+use BWC\Component\JwtApi\Context\JwtBindingTypes;
 use BWC\Component\JwtApi\Context\JwtContext;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -13,7 +13,7 @@ class JwtContextTest extends \PHPUnit_Framework_TestCase
      */
     public function shouldConstruct()
     {
-        new JwtContext(new Request(), JwtBindingType::HTTP_REDIRECT, null);
+        new JwtContext(new Request(), JwtBindingTypes::HTTP_REDIRECT, null);
     }
 
 
@@ -34,7 +34,7 @@ class JwtContextTest extends \PHPUnit_Framework_TestCase
      */
     public function shouldThrowOnSetResponseBindingTypeWithInvalidBindingType()
     {
-        $context = new JwtContext(new Request(), JwtBindingType::HTTP_REDIRECT, null);
+        $context = new JwtContext(new Request(), JwtBindingTypes::HTTP_REDIRECT, null);
         $context->setResponseBindingType('foo');
     }
 
@@ -44,7 +44,7 @@ class JwtContextTest extends \PHPUnit_Framework_TestCase
      */
     public function shouldReturnSetOption()
     {
-        $context = new JwtContext(new Request(), JwtBindingType::HTTP_REDIRECT, null);
+        $context = new JwtContext(new Request(), JwtBindingTypes::HTTP_REDIRECT, null);
 
         $context->optionSet('foo', $expectedFooValue = 'foo.value');
         $context->optionSet('bar', $expectedBarValue = array(1,2,3));

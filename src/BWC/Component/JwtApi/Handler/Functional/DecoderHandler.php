@@ -35,8 +35,9 @@ class DecoderHandler implements ContextHandlerInterface
      */
     public function handleContext(JwtContext $context)
     {
+        $token = $context->getRequestJwtToken();
         /** @var MethodJwt $jwt */
-        $jwt = $this->encoder->decode($context->getRequestJwtToken(), $this->class);
+        $jwt = $this->encoder->decode($token, $this->class);
 
         if (false == $jwt instanceof MethodJwt) {
             throw new JwtException(sprintf("Expected MethodJwt but got '%s'", get_class($jwt)));

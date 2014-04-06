@@ -6,6 +6,9 @@ parameters:
     bwc_component_jwt_api.encoder.class: BWC\Component\Jwe\Encoder
     bwc_component_jwt_api.encoder.decode_class: BWC\Component\JwtApi\Method\MethodJwt
 
+    bwc_component_jwt_api.key_provider.simple.class: BWC\Component\JwtApi\KeyProvider\SimpleKeyProvider
+    bwc_component_jwt_api.key_provider.simple.keys: []
+
     bwc_component_jwt_api.validator.class: BWC\Component\JwtApi\Validator\CompositeJwtValidator
     bwc_component_jwt_api.validator.issued_time.class: BWC\Component\JwtApi\Validator\IssuedTimeValidator
     bwc_component_jwt_api.validator.issued_time.max_time_difference: 120
@@ -15,11 +18,16 @@ parameters:
 
     bwc_component_jwt_api.subject_provider.null.class: BWC\Component\JwtApi\Subject\NullSubjectProvider
 
-    bwc_component_jwt_api.handler.decoder.class: BWC\Component\JwtApi\Handler\DecoderHandler
-    bwc_component_jwt_api.handler.key_provider.class: BWC\Component\JwtApi\Handler\KeyProviderHandler
-    bwc_component_jwt_api.handler.validator.class: BWC\Component\JwtApi\Handler\ValidatorHandler
-    bwc_component_jwt_api.handler.bearer_provider.class: BWC\Component\JwtApi\Handler\BearerProviderHandler
-    bwc_component_jwt_api.handler.subject_provider.class: BWC\Component\JwtApi\Handler\SubjectProviderHandler
+    bwc_component_jwt_api.handler.decoder.class: BWC\Component\JwtApi\Handler\Functional\DecoderHandler
+    bwc_component_jwt_api.handler.key_provider.class: BWC\Component\JwtApi\Handler\Functional\KeyProviderHandler
+    bwc_component_jwt_api.handler.validator.class: BWC\Component\JwtApi\Handler\Functional\ValidatorHandler
+    bwc_component_jwt_api.handler.bearer_provider.class: BWC\Component\JwtApi\Handler\Functional\BearerProviderHandler
+    bwc_component_jwt_api.handler.subject_provider.class: BWC\Component\JwtApi\Handler\Functional\SubjectProviderHandler
+    bwc_component_jwt_api.handler.unhandled.class: BWC\Component\JwtApi\Handler\Functional\UnhandledContextHandler
+    bwc_component_jwt_api.handler.encoder.class: BWC\Component\JwtApi\Handler\Functional\EncoderHandler
+
+    bwc_component_jwt_api.handler.composite.class: BWC\Component\JwtApi\Handler\Structural\CompositeContextHandler
+    bwc_component_jwt_api.handler.direction_method_filter.class: BWC\Component\JwtApi\Handler\Structural\DirectionMethodFilterHandler
 
 services:
 
@@ -34,13 +42,19 @@ services:
     bwc_component_jwt_api.jwt_manager:
         class: %bwc_component_jwt_api.jwt_manager.class%
         arguments: [@bwc_component_jwt_api.receiver, @bwc_component_jwt_api.sender]
+        # factory sets handlers by tag bwc_component_jwt_api.handler and with order of priority attribute
 
-
-    # GLOBAL --------------------------------------------------
+    # ENCODER --------------------------------------------------
 
     bwc_component_jwt_api.encoder:
         class: %bwc_component_jwt_api.encoder.class%
 
+
+    # KEY PROVIDER --------------------------------------------
+
+    bwc_component_jwt_api.key_provider.simple:
+        class: %bwc_component_jwt_api.key_provider.simple.class%
+        arguments: [bwc_component_jwt_api.key_provider.simple.keys] # factory sets keys from config
 
     # VALIDATOR -----------------------------------------------
 
@@ -77,28 +91,58 @@ services:
         class: %bwc_component_jwt_api.handler.decoder.class%
         arguments: [@bwc_component_jwt_api.encoder, %bwc_component_jwt_api.encoder.decode_class%]
         tags:
-            - { name: 'bwc_component_jwt_api.handler', priority: 10 }
+            - { name: 'bwc_component_jwt_api.handler', priority: 100 }
 
     bwc_component_jwt_api.handler.key_provider:
         class: %bwc_component_jwt_api.handler.key_provider.class%
-        arguments: [~] # TODO factory to set keyProvider
+        arguments: [@bwc_component_jwt_api.key_provider.simple] # factory sets key provider
         tags:
-            - { name: 'bwc_component_jwt_api.handler', priority: 20 }
+            - { name: 'bwc_component_jwt_api.handler', priority: 200 }
 
     bwc_component_jwt_api.handler.validator:
         class: %bwc_component_jwt_api.handler.validator.class%
         arguments: [@bwc_component_jwt_api.validator]
         tags:
-            - { name: 'bwc_component_jwt_api.handler', priority: 30 }
+            - { name: 'bwc_component_jwt_api.handler', priority: 300 }
 
     bwc_component_jwt_api.handler.bearer_provider:
         class: %bwc_component_jwt_api.handler.bearer_provider.class%
-        arguments: [@bwc_component_jwt_api.bearer_provider.user_security_context]
+        arguments: [@bwc_component_jwt_api.bearer_provider.user_security_context] # factory sets bearer provider
         tags:
-            - { name: 'bwc_component_jwt_api.handler', priority: 40 }
+            - { name: 'bwc_component_jwt_api.handler', priority: 400 }
 
     bwc_component_jwt_api.handler.subject_provider:
         class: %bwc_component_jwt_api.handler.subject_provider.class%
-        arguments: [@bwc_component_jwt_api.subject_provider.null]
+        arguments: [@bwc_component_jwt_api.subject_provider.null] # factory sets subject provider
         tags:
-            - { name: 'bwc_component_jwt_api.handler', priority: 50 }
+            - { name: 'bwc_component_jwt_api.handler', priority: 500 }
+
+    bwc_component_jwt_api.handler.method:
+        class: %bwc_component_jwt_api.handler.composite.class%
+        tags:
+            - { name: 'bwc_component_jwt_api.handler', priority: 1000 }
+        # TODO factory to set child filter handlers for each tagged method
+
+    bwc_component_jwt_api.handler.unhandled:
+        class: %bwc_component_jwt_api.handler.unhandled.class%
+        tags:
+            - { name: 'bwc_component_jwt_api.handler', priority: 2000 }
+
+    bwc_component_jwt_api.handler.encoder:
+        class: %bwc_component_jwt_api.handler.encoder.class%
+        arguments: [@bwc_component_jwt_api.encoder]
+        tags:
+            - { name: 'bwc_component_jwt_api.handler', priority: 3000 }
+
+
+
+    bwc_component_jwt_api.handler.abstract.filter.direction_method:
+        class: %bwc_component_jwt_api.handler.direction_method_filter.class%
+        arguments: [inner, direction, method]
+        abstract: true
+        # TODO factory to clone for each method
+
+    bwc_component_jwt_api.handler.abstract.composite:
+        class: %bwc_component_jwt_api.handler.composite.class%
+        abstract: true
+        # TODO factory to clone for each method with pre & post

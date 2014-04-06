@@ -2,6 +2,7 @@
 
 namespace BWC\Component\JwtApi\Handler\Structural;
 
+use BWC\Component\JwtApi\Context\JwtContext;
 use BWC\Component\JwtApi\Handler\ContextHandlerInterface;
 
 class DecoratorHandler extends CompositeContextHandler
@@ -28,6 +29,19 @@ class DecoratorHandler extends CompositeContextHandler
         $this->innerHandler = $innerHandler;
     }
 
+
+    /**
+     * @param JwtContext $context
+     * @throws \Exception
+     */
+    public function handleContext(JwtContext $context)
+    {
+        if (false == $this->isBuilt) {
+            throw new \RuntimeException('Must call build() method first to be able to handle context');
+        }
+
+        parent::handleContext($context);
+    }
 
     /**
      * @param ContextHandlerInterface $handler

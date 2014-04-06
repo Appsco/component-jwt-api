@@ -2,7 +2,10 @@
 <phpunit bootstrap="autoload.php" color="true">
     <testsuites>
         <testsuite name="BwcComponentJwtApi">
-            <directory suffix="Test.php">./test/Bwc/Component/JwtApi/Test</directory>
+            <directory suffix="Test.php">./src/Bwc/Component/JwtApi/Tests</directory>
+        </testsuite>
+        <testsuite name="BwcComponentJwtApiBundle">
+            <directory suffix="Test.php">./src/Bwc/Component/JwtApiBundle/Tests</directory>
         </testsuite>
     </testsuites>
 </phpunit>

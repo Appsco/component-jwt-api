@@ -6,6 +6,7 @@ use BWC\Component\JwtApi\Context\ContextOptions;
 use BWC\Component\JwtApi\Context\JwtContext;
 use BWC\Component\JwtApi\Handler\ContextHandlerInterface;
 
+
 class CompositeContextHandler implements ContextHandlerInterface
 {
     /** @var ContextHandlerInterface[] */

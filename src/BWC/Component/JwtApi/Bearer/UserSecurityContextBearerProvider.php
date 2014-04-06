@@ -5,6 +5,7 @@ namespace BWC\Component\JwtApi\Bearer;
 use BWC\Component\JwtApi\Context\JwtContext;
 use Symfony\Component\Security\Core\SecurityContextInterface;
 
+
 class UserSecurityContextBearerProvider implements BearerProviderInterface
 {
     /** @var  SecurityContextInterface */

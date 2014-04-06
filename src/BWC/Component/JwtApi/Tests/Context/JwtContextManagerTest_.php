@@ -1,6 +1,6 @@
 <?php
 
-namespace BWC\Component\JwtApi\Test\Context;
+namespace BWC\Component\JwtApi\Tests\Context;
 
 use BWC\Component\JwtApi\Context\JwtBindingTypes;
 use BWC\Component\JwtApi\Context\JwtContext;

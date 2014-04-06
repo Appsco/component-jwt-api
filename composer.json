@@ -5,7 +5,7 @@
     "autoload": {
         "psr-0": {
             "BWC\\Component\\JwtApi\\": "src/",
-            "BWC\\Component\\JwtApi\\Test": "test/"
+            "BWC\\Component\\JwtApiBunle\\": "src/"
         }
     }, 
     "require": {

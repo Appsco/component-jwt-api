@@ -12,9 +12,20 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('bwc_component_jwt_api');
 
-        // Here you should define the parameters that are allowed to
-        // configure your bundle. See the documentation linked above for
-        // more information on that topic.
+        $rootNode->children()
+            ->booleanNode('enabled')->defaultTrue()->end()
+            ->arrayNode('key_provider')->isRequired()
+                ->children()
+                    ->arrayNode('keys')
+                        ->cannotBeEmpty()
+                        ->prototype('scalar')->end()
+                    ->end()
+                    ->scalarNode('id')->cannotBeEmpty()->end()
+                ->end()
+            ->end()
+            ->scalarNode('bearer_provider')->defaultValue('bwc_component_jwt_api.bearer_provider.user_security_context')->end()
+            ->scalarNode('subject_provider')->defaultValue('bwc_component_jwt_api.subject_provider.null')->end()
+        ->end();
 
         return $treeBuilder;
     }

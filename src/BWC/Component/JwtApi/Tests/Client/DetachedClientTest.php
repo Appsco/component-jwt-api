@@ -1,6 +1,6 @@
 <?php
 
-namespace BWC\Component\JwtApi\Test\Client;
+namespace BWC\Component\JwtApi\Tests\Client;
 
 use BWC\Component\Jwe\JwsHeader;
 use BWC\Component\Jwe\Jwt;

@@ -101,6 +101,22 @@ class MethodJwt extends Jwt
         return $this->get(MethodClaims::METHOD);
     }
 
+    /**
+     * @param string $direction
+     * @return $this|MethodJwt
+     */
+    public function setDirection($direction)
+    {
+        return $this->set(MethodClaims::DIRECTION, $direction);
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getDirection()
+    {
+        return $this->get(MethodClaims::DIRECTION);
+    }
 
     /**
      * @param mixed $data

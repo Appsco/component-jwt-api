@@ -1,6 +1,7 @@
 parameters:
     bwc_component_jwt_api.jwt_manager.class: BWC\Component\JwtApi\Manager\JwtManager
     bwc_component_jwt_api.receiver.class: BWC\Component\JwtApi\Receiver\CompositeReceiver
+    bwc_component_jwt_api.receiver.jwt.class: BWC\Component\JwtApi\Receiver\JwtReceiver
     bwc_component_jwt_api.sender.class: BWC\Component\JwtApi\Sender\Sender
 
     bwc_component_jwt_api.encoder.class: BWC\Component\Jwe\Encoder
@@ -28,16 +29,26 @@ parameters:
 
     bwc_component_jwt_api.handler.composite.class: BWC\Component\JwtApi\Handler\Structural\CompositeContextHandler
     bwc_component_jwt_api.handler.direction_method_filter.class: BWC\Component\JwtApi\Handler\Structural\DirectionMethodFilterHandler
+    bwc_component_jwt_api.handler.null.class: BWC\Component\JwtApi\Handler\Structural\NullContextHandler
 
 services:
 
-    # MANAGER ------------------------------------------------
+    # RECEIVER ------------------------------------------------
 
     bwc_component_jwt_api.receiver:
         class: %bwc_component_jwt_api.receiver.class%
+        calls:
+            - [ addReceiver, [@bwc_component_jwt_api.receiver.jwt] ]
+
+    bwc_component_jwt_api.receiver.jwt:
+        class: %bwc_component_jwt_api.receiver.jwt.class%
+
+    # MANAGER ------------------------------------------------
 
     bwc_component_jwt_api.sender:
         class: %bwc_component_jwt_api.sender.class%
+
+    # MANAGER ------------------------------------------------
 
     bwc_component_jwt_api.jwt_manager:
         class: %bwc_component_jwt_api.jwt_manager.class%
@@ -77,7 +88,7 @@ services:
 
     bwc_component_jwt_api.bearer_provider.user_security_context:
         class: %bwc_component_jwt_api.bearer_provider.user_security_context.class%
-        arguments: []
+        arguments: [@security.context]
 
     # SUBJECT PROVIDER ---------------------------------------
 

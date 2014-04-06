@@ -213,13 +213,13 @@ class BWCComponentJwtApiExtension extends Extension
 
         foreach ($arrTaggedDecorators as $id=>$attributes) {
             foreach ($attributes as $attr) {
-                if (!isset($attr['name'])) {
+                if (!isset($attr['decorator'])) {
                     throw new InvalidConfigurationException(
                         sprintf("Service '%s' missing name attribute on bwc_component_jwt_api.decorator tag", $id)
                     );
                 }
 
-                $name = $attr['name'];
+                $name = $attr['decorator'];
 
                 if (isset($arrDecorators[$name])) {
                     throw new InvalidConfigurationException(

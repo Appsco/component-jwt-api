@@ -106,6 +106,6 @@ setting their ```priority``` attribute so they fit on desired position in the ex
 
 Default handlers can not be removed, but it's behavior can be changed by changing value of their class parameter.
 Their functionality can be removed by setting their call either to ```bwc_component_jwt_api.handler.null.class```
-or ```BWC\Component\JwtApi\Handler\Structural\NullContextHandler``` which is a null handler that does nothing.
+or ```BWC\Component\JwtApiBundle\Handler\Structural\NullContextHandler``` which is a null handler that does nothing.
 
 

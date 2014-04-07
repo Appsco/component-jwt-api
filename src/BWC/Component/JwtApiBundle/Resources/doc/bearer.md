@@ -13,6 +13,8 @@ Implementations of the ```BearerProviderInterface``` are
 1. ```NullBearerProvider``` - always returns null
 2. ```UserSecurityContextBearerProvider``` - returns user from the security context token if present
 
+Normally you would implement your own bearer provider.
+
 The bearer provider can be specified with ```bearer_provider``` configuration
 
 ``` yaml

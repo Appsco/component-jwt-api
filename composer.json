@@ -4,12 +4,11 @@
     "minimum-stability": "stable",
     "autoload": {
         "psr-0": {
-            "BWC\\Component\\JwtApi\\": "src/",
             "BWC\\Component\\JwtApiBunle\\": "src/"
         }
     }, 
     "require": {
         "bwc/component-jwe": "dev-master",
-        "symfony/http-foundation": "~2.2"
+        "symfony/http-foundation": ">=2.2"
     }
 }

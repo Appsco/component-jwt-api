@@ -1,35 +1,35 @@
 parameters:
-    bwc_component_jwt_api.jwt_manager.class: BWC\Component\JwtApi\Manager\JwtManager
-    bwc_component_jwt_api.receiver.class: BWC\Component\JwtApi\Receiver\CompositeReceiver
-    bwc_component_jwt_api.receiver.jwt.class: BWC\Component\JwtApi\Receiver\JwtReceiver
-    bwc_component_jwt_api.sender.class: BWC\Component\JwtApi\Sender\Sender
+    bwc_component_jwt_api.jwt_manager.class: BWC\Component\JwtApiBundle\Manager\JwtManager
+    bwc_component_jwt_api.receiver.class: BWC\Component\JwtApiBundle\Receiver\CompositeReceiver
+    bwc_component_jwt_api.receiver.jwt.class: BWC\Component\JwtApiBundle\Receiver\JwtReceiver
+    bwc_component_jwt_api.sender.class: BWC\Component\JwtApiBundle\Sender\Sender
 
     bwc_component_jwt_api.encoder.class: BWC\Component\Jwe\Encoder
-    bwc_component_jwt_api.encoder.decode_class: BWC\Component\JwtApi\Method\MethodJwt
+    bwc_component_jwt_api.encoder.decode_class: BWC\Component\JwtApiBundle\Method\MethodJwt
 
-    bwc_component_jwt_api.key_provider.simple.class: BWC\Component\JwtApi\KeyProvider\SimpleKeyProvider
+    bwc_component_jwt_api.key_provider.simple.class: BWC\Component\JwtApiBundle\KeyProvider\SimpleKeyProvider
     bwc_component_jwt_api.key_provider.simple.keys: []
 
-    bwc_component_jwt_api.validator.class: BWC\Component\JwtApi\Validator\CompositeJwtValidator
-    bwc_component_jwt_api.validator.issued_time.class: BWC\Component\JwtApi\Validator\IssuedTimeValidator
+    bwc_component_jwt_api.validator.class: BWC\Component\JwtApiBundle\Validator\CompositeJwtValidator
+    bwc_component_jwt_api.validator.issued_time.class: BWC\Component\JwtApiBundle\Validator\IssuedTimeValidator
     bwc_component_jwt_api.validator.issued_time.max_time_difference: 120
-    bwc_component_jwt_api.validator.signature.class: BWC\Component\JwtApi\Validator\SignatureValidator
+    bwc_component_jwt_api.validator.signature.class: BWC\Component\JwtApiBundle\Validator\SignatureValidator
 
-    bwc_component_jwt_api.bearer_provider.user_security_context.class: BWC\Component\JwtApi\Bearer\UserSecurityContextBearerProvider
+    bwc_component_jwt_api.bearer_provider.user_security_context.class: BWC\Component\JwtApiBundle\Bearer\UserSecurityContextBearerProvider
 
-    bwc_component_jwt_api.subject_provider.null.class: BWC\Component\JwtApi\Subject\NullSubjectProvider
+    bwc_component_jwt_api.subject_provider.null.class: BWC\Component\JwtApiBundle\Subject\NullSubjectProvider
 
-    bwc_component_jwt_api.handler.decoder.class: BWC\Component\JwtApi\Handler\Functional\DecoderHandler
-    bwc_component_jwt_api.handler.key_provider.class: BWC\Component\JwtApi\Handler\Functional\KeyProviderHandler
-    bwc_component_jwt_api.handler.validator.class: BWC\Component\JwtApi\Handler\Functional\ValidatorHandler
-    bwc_component_jwt_api.handler.bearer_provider.class: BWC\Component\JwtApi\Handler\Functional\BearerProviderHandler
-    bwc_component_jwt_api.handler.subject_provider.class: BWC\Component\JwtApi\Handler\Functional\SubjectProviderHandler
-    bwc_component_jwt_api.handler.unhandled.class: BWC\Component\JwtApi\Handler\Functional\UnhandledContextHandler
-    bwc_component_jwt_api.handler.encoder.class: BWC\Component\JwtApi\Handler\Functional\EncoderHandler
+    bwc_component_jwt_api.handler.decoder.class: BWC\Component\JwtApiBundle\Handler\Functional\DecoderHandler
+    bwc_component_jwt_api.handler.key_provider.class: BWC\Component\JwtApiBundle\Handler\Functional\KeyProviderHandler
+    bwc_component_jwt_api.handler.validator.class: BWC\Component\JwtApiBundle\Handler\Functional\ValidatorHandler
+    bwc_component_jwt_api.handler.bearer_provider.class: BWC\Component\JwtApiBundle\Handler\Functional\BearerProviderHandler
+    bwc_component_jwt_api.handler.subject_provider.class: BWC\Component\JwtApiBundle\Handler\Functional\SubjectProviderHandler
+    bwc_component_jwt_api.handler.unhandled.class: BWC\Component\JwtApiBundle\Handler\Functional\UnhandledContextHandler
+    bwc_component_jwt_api.handler.encoder.class: BWC\Component\JwtApiBundle\Handler\Functional\EncoderHandler
 
-    bwc_component_jwt_api.handler.composite.class: BWC\Component\JwtApi\Handler\Structural\CompositeContextHandler
-    bwc_component_jwt_api.handler.direction_method_filter.class: BWC\Component\JwtApi\Handler\Structural\DirectionMethodFilterHandler
-    bwc_component_jwt_api.handler.null.class: BWC\Component\JwtApi\Handler\Structural\NullContextHandler
+    bwc_component_jwt_api.handler.composite.class: BWC\Component\JwtApiBundle\Handler\Structural\CompositeContextHandler
+    bwc_component_jwt_api.handler.direction_method_filter.class: BWC\Component\JwtApiBundle\Handler\Structural\DirectionMethodFilterHandler
+    bwc_component_jwt_api.handler.null.class: BWC\Component\JwtApiBundle\Handler\Structural\NullContextHandler
 
 services:
 

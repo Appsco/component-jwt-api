@@ -2,7 +2,7 @@
 
 namespace BWC\Component\JwtApiBundle\DependencyInjection;
 
-use BWC\Component\JwtApi\Method\Directions;
+use BWC\Component\JwtApiBundle\Method\Directions;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;

@@ -9,9 +9,9 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @test
-     * @expectedException \Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
+     * @_expectedException \Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
      */
-    public function shouldRequireKeys()
+    public function shouldAllowNoConfiguration()
     {
         $configs = array();
         $this->processConfiguration($configs);
@@ -47,6 +47,24 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->processConfiguration($configs);
+    }
+
+    /**
+     * @test
+     */
+    public function shouldBeEnabledByDefault()
+    {
+        $configs = array(
+            'bwc_component_jwt_api' => array(
+                'key_provider' => array(
+                    'id' => 'key_provider_service'
+                )
+            )
+        );
+
+        $config = $this->processConfiguration($configs);
+
+        $this->assertTrue($config['enabled']);
     }
 
     /**

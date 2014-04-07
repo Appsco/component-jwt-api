@@ -48,4 +48,14 @@ class CompositeContextHandler implements ContextHandlerInterface
         return $this;
     }
 
+    /**
+     * @return \BWC\Component\JwtApiBundle\Handler\ContextHandlerInterface[]
+     */
+    public function getContextHandlers()
+    {
+        return $this->contextHandlers;
+    }
+
+
+
 } 

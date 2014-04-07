@@ -14,7 +14,8 @@ class Configuration implements ConfigurationInterface
 
         $rootNode->children()
             ->booleanNode('enabled')->defaultTrue()->end()
-            ->arrayNode('key_provider')->isRequired()
+            ->arrayNode('key_provider')
+                ->treatNullLike(array('id'=>null))
                 ->children()
                     ->arrayNode('keys')
                         ->cannotBeEmpty()

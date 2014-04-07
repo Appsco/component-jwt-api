@@ -32,8 +32,9 @@ class BWCComponentJwtApiExtension extends Extension
 
     protected function build(array $config, ContainerBuilder $container)
     {
-        $this->buildKeyProvider($config, $container);
+        $this->buildKeyProvider(isset($config['key_provider']) ? $config['key_provider'] : array(), $container);
         $this->buildBearerProvider($config, $container);
+        $this->buildSubjectProvider($config, $container);
         $this->buildContextHandlers($config, $container);
         $this->buildAllMethods($container);
     }
@@ -42,20 +43,27 @@ class BWCComponentJwtApiExtension extends Extension
     /**
      * @param array $config
      * @param ContainerBuilder $container
+     * @throws \Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
      */
     protected function buildKeyProvider(array $config, ContainerBuilder $container)
     {
-        if (isset($config['keys'])) {
+        if (isset($config['id'])) {
+            // Service id specified for key provider
+            $keyProvider = new Reference($config['id']);
+        } else {
             // Simple key provider with keys in the config
-            $simpleKeyProvider = $container->getDefinition('bwc_component_jwt_api.key_provider.simple');
-            foreach ($config['keys'] as $key) {
-                $simpleKeyProvider->addMethodCall('addKey', array($key));
+            if (isset($config['keys'])) {
+                if (is_array($config['keys'])) {
+                    $simpleKeyProvider = $container->getDefinition('bwc_component_jwt_api.key_provider.simple');
+                    foreach ($config['keys'] as $key) {
+                        $simpleKeyProvider->addMethodCall('addKey', array($key));
+                    }
+                } else {
+                    throw new InvalidConfigurationException('bwc_component_jwt_api.key_provider.keys must be array');
+                }
             }
 
             $keyProvider = new Reference('bwc_component_jwt_api.key_provider.simple');
-        } else {
-            // Service id specified for key provider
-            $keyProvider = new Reference($config['id']);
         }
 
         $handler = $container->getDefinition('bwc_component_jwt_api.handler.key_provider');
@@ -100,7 +108,7 @@ class BWCComponentJwtApiExtension extends Extension
         $arrHandlers = array();
         foreach ($arrTaggedContextHandlers as $id=>$attributes) {
             foreach ($attributes as $attr) {
-                if (!isset($config['priority'])) {
+                if (!isset($attr['priority'])) {
                     throw new InvalidConfigurationException(
                         sprintf("Service '%s' missing priority on bwc_component_jwt_api.handler tag", $id)
                     );
@@ -108,7 +116,7 @@ class BWCComponentJwtApiExtension extends Extension
                 $priority = intval($attr['priority']);
                 if ($priority < 1) {
                     throw new InvalidConfigurationException(
-                        sprintf("Service '%s' missing priority on bwc_component_jwt_api.handler tag", $id, $attr['priority'])
+                        sprintf("Service '%s' has invalid priority '%s' on bwc_component_jwt_api.handler tag", $id, $attr['priority'])
                     );
                 }
 
@@ -215,7 +223,7 @@ class BWCComponentJwtApiExtension extends Extension
             foreach ($attributes as $attr) {
                 if (!isset($attr['decorator'])) {
                     throw new InvalidConfigurationException(
-                        sprintf("Service '%s' missing name attribute on bwc_component_jwt_api.decorator tag", $id)
+                        sprintf("Service '%s' missing decorator attribute on bwc_component_jwt_api.decorator tag", $id)
                     );
                 }
 

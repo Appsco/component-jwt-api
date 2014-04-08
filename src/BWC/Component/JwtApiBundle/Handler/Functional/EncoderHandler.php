@@ -39,4 +39,13 @@ class EncoderHandler implements ContextHandlerInterface
         }
     }
 
+    /**
+     * @return string
+     */
+    public function info()
+    {
+        return 'EncoderHandler';
+    }
+
+
 } 

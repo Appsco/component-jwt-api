@@ -31,6 +31,8 @@ class CompositeContextHandler implements ContextHandlerInterface
         } catch (\Exception $ex) {
             if ($this->exceptionStrategy) {
                 $this->exceptionStrategy->handle($ex, $context);
+            } else {
+                throw $ex;
             }
         }
     }
@@ -96,6 +98,12 @@ class CompositeContextHandler implements ContextHandlerInterface
         return $this->contextHandlers;
     }
 
+    /**
+     * @return string
+     */
+    public function info()
+    {
+        return "CompositeContextHandler";
+    }
 
-
-} 
+}

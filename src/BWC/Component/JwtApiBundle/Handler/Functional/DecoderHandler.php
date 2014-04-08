@@ -46,4 +46,13 @@ class DecoderHandler implements ContextHandlerInterface
         $context->setRequestJwt($jwt);
     }
 
+    /**
+     * @return string
+     */
+    public function info()
+    {
+        return 'DecoderHandler';
+    }
+
+
 } 

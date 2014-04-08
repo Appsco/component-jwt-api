@@ -32,4 +32,13 @@ class KeyProviderHandler implements ContextHandlerInterface
         $context->optionSet(ContextOptions::KEYS, $this->keyProvider->getKeys($context));
     }
 
-} 
+    /**
+     * @return string
+     */
+    public function info()
+    {
+        return 'KeyProviderHandler';
+    }
+
+
+}

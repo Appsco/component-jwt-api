@@ -225,3 +225,4 @@ services:
         class: %bwc_component_jwt_api.handler.composite.class%
         abstract: true
         # factory clones for each method for pre & post decorators
+

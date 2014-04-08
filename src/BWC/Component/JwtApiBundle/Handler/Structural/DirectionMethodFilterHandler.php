@@ -15,4 +15,17 @@ class DirectionMethodFilterHandler extends JwtPayloadFilterHandler
         ));
     }
 
+
+    /**
+     * @return string
+     */
+    public function info()
+    {
+        return sprintf("DirectionMethodFilterHandler - direction: '%s'; method: '%s'",
+            $this->filter[MethodClaims::DIRECTION],
+            $this->filter[MethodClaims::METHOD]
+        );
+    }
+
+
 } 

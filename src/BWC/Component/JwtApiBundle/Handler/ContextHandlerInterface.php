@@ -2,7 +2,6 @@
 
 namespace BWC\Component\JwtApiBundle\Handler;
 
-
 use BWC\Component\JwtApiBundle\Context\JwtContext;
 
 interface ContextHandlerInterface
@@ -12,4 +11,8 @@ interface ContextHandlerInterface
      */
     public function handleContext(JwtContext $context);
 
+    /**
+     * @return string
+     */
+    public function info();
 } 

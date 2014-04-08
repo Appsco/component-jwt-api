@@ -6,11 +6,8 @@ use BWC\Component\JwtApiBundle\Context\JwtContext;
 use BWC\Component\JwtApiBundle\Error\JwtException;
 use BWC\Component\JwtApiBundle\Handler\ContextHandlerInterface;
 
-class JwtPayloadFilterHandler implements ContextHandlerInterface
+class JwtPayloadFilterHandler extends CompositeContextHandler
 {
-    /** @var ContextHandlerInterface  */
-    protected $innerHandler;
-
     /** @var array  */
     protected $filter;
 
@@ -21,7 +18,7 @@ class JwtPayloadFilterHandler implements ContextHandlerInterface
      */
     public function __construct(ContextHandlerInterface $innerHandler, array $filter)
     {
-        $this->innerHandler = $innerHandler;
+        $this->addContextHandler($innerHandler);
         $this->filter = $filter;
     }
 
@@ -40,8 +37,16 @@ class JwtPayloadFilterHandler implements ContextHandlerInterface
             }
         }
 
-        $this->innerHandler->handleContext($context);
+        parent::handleContext($context);
+    }
+
+    /**
+     * @return string
+     */
+    public function info()
+    {
+        return 'JwtPayloadFilterHandler - filter: '.json_encode($this->filter);
     }
 
 
-} 
+}

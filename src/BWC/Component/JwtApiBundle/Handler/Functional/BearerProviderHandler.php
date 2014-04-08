@@ -30,4 +30,13 @@ class BearerProviderHandler implements ContextHandlerInterface
         $context->setBearer($this->bearerProvider->getBearer($context));
     }
 
+    /**
+     * @return string
+     */
+    public function info()
+    {
+        return 'BearerProviderHandler';
+    }
+
+
 } 

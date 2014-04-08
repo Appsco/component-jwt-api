@@ -30,4 +30,13 @@ class SubjectProviderHandler implements ContextHandlerInterface
         $context->setSubject($this->subjectProvider->getSubject($context));
     }
 
+    /**
+     * @return string
+     */
+    public function info()
+    {
+        return 'SubjectProviderHandler';
+    }
+
+
 } 

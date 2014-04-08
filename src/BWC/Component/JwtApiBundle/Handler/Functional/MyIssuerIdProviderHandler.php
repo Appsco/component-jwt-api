@@ -30,4 +30,13 @@ class MyIssuerIdProviderHandler implements ContextHandlerInterface
         $context->setMyIssuerId($this->issuerProvider->getIssuer($context));
     }
 
+    /**
+     * @return string
+     */
+    public function info()
+    {
+        return 'MyIssuerIdProviderHandler';
+    }
+
+
 } 

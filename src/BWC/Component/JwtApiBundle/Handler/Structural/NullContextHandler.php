@@ -15,4 +15,13 @@ class NullContextHandler implements ContextHandlerInterface
 
     }
 
+    /**
+     * @return string
+     */
+    public function info()
+    {
+        return 'NullContextHandler';
+    }
+
+
 } 

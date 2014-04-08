@@ -28,4 +28,13 @@ class ValidatorHandler implements ContextHandlerInterface
         $this->validator->validate($context);
     }
 
+    /**
+     * @return string
+     */
+    public function info()
+    {
+        return 'ValidatorHandler';
+    }
+
+
 } 

@@ -17,7 +17,7 @@ class UnhandledContextHandler implements ContextHandlerInterface
      */
     public function handleContext(JwtContext $context)
     {
-        if ($context->optionGet(ContextOptions::HANDLED)) {
+        if ($context->getResponseJwt() || $context->optionGet(ContextOptions::HANDLED)) {
             return;
         }
 
@@ -39,5 +39,14 @@ class UnhandledContextHandler implements ContextHandlerInterface
 
         $context->setResponseJwt($responseJwt);
     }
+
+    /**
+     * @return string
+     */
+    public function info()
+    {
+        return 'UnhandledContextHandler';
+    }
+
 
 } 

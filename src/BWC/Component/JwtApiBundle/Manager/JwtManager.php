@@ -3,6 +3,7 @@
 namespace BWC\Component\JwtApiBundle\Manager;
 
 use BWC\Component\JwtApiBundle\Context\JwtContext;
+use BWC\Component\JwtApiBundle\Handler\ContextHandlerInterface;
 use BWC\Component\JwtApiBundle\Handler\Structural\CompositeContextHandler;
 use BWC\Component\JwtApiBundle\Receiver\ReceiverInterface;
 use BWC\Component\JwtApiBundle\Sender\SenderInterface;
@@ -68,5 +69,37 @@ class JwtManager extends CompositeContextHandler implements JwtManagerInterface
         return $this->sender->send($context);
     }
 
+
+    /**
+     * @return string
+     */
+    public function info()
+    {
+        $arr = array('* JwtManager');
+        foreach ($this->getContextHandlers() as $child) {
+            $this->getHandlerInfo($arr, $child, '    ');
+        }
+        return implode("\n", $arr);
+    }
+
+
+    /**
+     * @param string[] $arr
+     * @param ContextHandlerInterface $handler
+     * @param string $indent
+     */
+    protected function getHandlerInfo(array &$arr, ContextHandlerInterface $handler, $indent)
+    {
+        $info = $handler->info();
+        if (!$info) {
+            $info = get_class($handler);
+        }
+        $arr[] = $indent.'* '.$info;
+        if ($handler instanceof CompositeContextHandler) {
+            foreach ($handler->getContextHandlers() as $child) {
+                $this->getHandlerInfo($arr, $child, $indent.'    ');
+            }
+        }
+    }
 
 } 

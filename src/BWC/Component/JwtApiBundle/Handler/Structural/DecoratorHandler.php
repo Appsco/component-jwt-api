@@ -98,4 +98,14 @@ class DecoratorHandler extends CompositeContextHandler
         return $this;
     }
 
+
+    /**
+     * @return string
+     */
+    public function info()
+    {
+        return 'DecoratorHandler';
+    }
+
+
 }

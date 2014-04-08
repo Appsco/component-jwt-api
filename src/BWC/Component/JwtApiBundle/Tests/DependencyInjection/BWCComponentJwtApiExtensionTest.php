@@ -13,9 +13,15 @@ class BWCComponentJwtApiExtensionTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function shouldLoadExtensionWithKeyProviderKeysOnly()
+    public function shouldLoadExtensionWithIssuerProviderIssuerOnly()
     {
-        $configs = array();
+        $configs = array(
+            'bwc_component_jwt_api' => array(
+                'issuer_provider' => array(
+                    'issuer' => 'foo'
+                ),
+            )
+        );
         $extension = new BWCComponentJwtApiExtension();
         $containerBuilder = new ContainerBuilder(new ParameterBag());
         $extension->load($configs, $containerBuilder);
@@ -46,7 +52,14 @@ class BWCComponentJwtApiExtensionTest extends \PHPUnit_Framework_TestCase
      */
     public function shouldLoadReceiver()
     {
-        $configs = array();
+        $configs = array(
+            'bwc_component_jwt_api' => array(
+                'issuer_provider' => array(
+                    'issuer' => 'foo'
+                )
+            )
+        );
+
         $extension = new BWCComponentJwtApiExtension();
         $containerBuilder = new ContainerBuilder(new ParameterBag());
         $extension->load($configs, $containerBuilder);
@@ -59,7 +72,14 @@ class BWCComponentJwtApiExtensionTest extends \PHPUnit_Framework_TestCase
      */
     public function shouldLoadSender()
     {
-        $configs = array();
+        $configs = array(
+            'bwc_component_jwt_api' => array(
+                'issuer_provider' => array(
+                    'issuer' => 'foo'
+                )
+            )
+        );
+
         $extension = new BWCComponentJwtApiExtension();
         $containerBuilder = new ContainerBuilder(new ParameterBag());
         $extension->load($configs, $containerBuilder);
@@ -72,7 +92,14 @@ class BWCComponentJwtApiExtensionTest extends \PHPUnit_Framework_TestCase
      */
     public function shouldLoadManager()
     {
-        $configs = array();
+        $configs = array(
+            'bwc_component_jwt_api' => array(
+                'issuer_provider' => array(
+                    'issuer' => 'foo'
+                )
+            )
+        );
+
         $extension = new BWCComponentJwtApiExtension();
         $containerBuilder = new ContainerBuilder(new ParameterBag());
         $extension->load($configs, $containerBuilder);
@@ -84,9 +111,16 @@ class BWCComponentJwtApiExtensionTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function shouldAddStadardHandlersToManager()
+    public function shouldAddStandardHandlersToManager()
     {
-        $configs = array();
+        $configs = array(
+            'bwc_component_jwt_api' => array(
+                'issuer_provider' => array(
+                    'issuer' => 'foo'
+                )
+            )
+        );
+
         $extension = new BWCComponentJwtApiExtension();
         $containerBuilder = new ContainerBuilder(new ParameterBag());
         $extension->load($configs, $containerBuilder);
@@ -96,28 +130,69 @@ class BWCComponentJwtApiExtensionTest extends \PHPUnit_Framework_TestCase
         $manager = $containerBuilder->getDefinition('bwc_component_jwt_api.jwt_manager');
         $arrCalls = $manager->getMethodCalls();
 
-        $this->assertCount(8, $arrCalls);
+        $arrHandlers = array();
         foreach ($arrCalls as $arr) {
-            $this->assertEquals('addContextHandler', $arr[0]);
-            $this->assertInstanceOf('Symfony\Component\DependencyInjection\Reference', $arr[1][0]);
+            if ($arr[0] == 'addContextHandler') {
+                $this->assertInstanceOf('Symfony\Component\DependencyInjection\Reference', $arr[1][0]);
+                $arrHandlers[] = (string)$arr[1][0];
+            }
         }
 
-        $this->assertEquals((string)$arrCalls[0][1][0], 'bwc_component_jwt_api.handler.decoder');
-        $this->assertEquals((string)$arrCalls[1][1][0], 'bwc_component_jwt_api.handler.key_provider');
-        $this->assertEquals((string)$arrCalls[2][1][0], 'bwc_component_jwt_api.handler.validator');
-        $this->assertEquals((string)$arrCalls[3][1][0], 'bwc_component_jwt_api.handler.bearer_provider');
-        $this->assertEquals((string)$arrCalls[4][1][0], 'bwc_component_jwt_api.handler.subject_provider');
-        $this->assertEquals((string)$arrCalls[5][1][0], 'bwc_component_jwt_api.handler.method');
-        $this->assertEquals((string)$arrCalls[6][1][0], 'bwc_component_jwt_api.handler.unhandled');
-        $this->assertEquals((string)$arrCalls[7][1][0], 'bwc_component_jwt_api.handler.encoder');
+        $this->assertEquals($arrHandlers[0], 'bwc_component_jwt_api.handler.my_issuer_id');
+        $this->assertEquals($arrHandlers[1], 'bwc_component_jwt_api.handler.decoder');
+        $this->assertEquals($arrHandlers[2], 'bwc_component_jwt_api.handler.key_provider');
+        $this->assertEquals($arrHandlers[3], 'bwc_component_jwt_api.handler.validator');
+        $this->assertEquals($arrHandlers[4], 'bwc_component_jwt_api.handler.bearer_provider');
+        $this->assertEquals($arrHandlers[5], 'bwc_component_jwt_api.handler.subject_provider');
+        $this->assertEquals($arrHandlers[6], 'bwc_component_jwt_api.handler.method');
+        $this->assertEquals($arrHandlers[7], 'bwc_component_jwt_api.handler.unhandled');
+        $this->assertEquals($arrHandlers[8], 'bwc_component_jwt_api.handler.encoder');
     }
+
+
+    public function shouldAddExceptionStrategyToManager()
+    {
+        $configs = array(
+            'bwc_component_jwt_api' => array(
+                'issuer_provider' => array(
+                    'issuer' => 'foo'
+                )
+            )
+        );
+
+        $extension = new BWCComponentJwtApiExtension();
+        $containerBuilder = new ContainerBuilder(new ParameterBag());
+        $extension->load($configs, $containerBuilder);
+
+        $manager = $containerBuilder->getDefinition('bwc_component_jwt_api.jwt_manager');
+        $arrCalls = $manager->getMethodCalls();
+
+        $exceptionStrategyCallCount = 0;
+        foreach ($arrCalls as $arr) {
+            if ($arr[0] == 'setExceptionStrategy') {
+                $this->assertInstanceOf('Symfony\Component\DependencyInjection\Reference', $arr[1][0]);
+                $this->assertEquals('bwc_component_jwt_api.exception_strategy', (string)$arr[1][0]);
+                $exceptionStrategyCallCount++;
+            }
+        }
+
+        $this->assertEquals(1, $exceptionStrategyCallCount);
+    }
+
 
     /**
      * @test
      */
     public function shouldCreateMethod()
     {
-        $configs = array();
+        $configs = array(
+            'bwc_component_jwt_api' => array(
+                'issuer_provider' => array(
+                    'issuer' => 'foo'
+                )
+            )
+        );
+
         $extension = new BWCComponentJwtApiExtension();
         $containerBuilder = new ContainerBuilder(new ParameterBag());
 
@@ -161,7 +236,14 @@ class BWCComponentJwtApiExtensionTest extends \PHPUnit_Framework_TestCase
      */
     public function shouldPreDecorate()
     {
-        $configs = array();
+        $configs = array(
+            'bwc_component_jwt_api' => array(
+                'issuer_provider' => array(
+                    'issuer' => 'foo'
+                )
+            )
+        );
+
         $extension = new BWCComponentJwtApiExtension();
         $containerBuilder = new ContainerBuilder(new ParameterBag());
 
@@ -214,7 +296,14 @@ class BWCComponentJwtApiExtensionTest extends \PHPUnit_Framework_TestCase
      */
     public function shouldPostDecorate()
     {
-        $configs = array();
+        $configs = array(
+            'bwc_component_jwt_api' => array(
+                'issuer_provider' => array(
+                    'issuer' => 'foo'
+                )
+            )
+        );
+
         $extension = new BWCComponentJwtApiExtension();
         $containerBuilder = new ContainerBuilder(new ParameterBag());
 
@@ -268,7 +357,14 @@ class BWCComponentJwtApiExtensionTest extends \PHPUnit_Framework_TestCase
      */
     public function shouldPrePostDecorate()
     {
-        $configs = array();
+        $configs = array(
+            'bwc_component_jwt_api' => array(
+                'issuer_provider' => array(
+                    'issuer' => 'foo'
+                )
+            )
+        );
+
         $extension = new BWCComponentJwtApiExtension();
         $containerBuilder = new ContainerBuilder(new ParameterBag());
 
@@ -330,6 +426,9 @@ class BWCComponentJwtApiExtensionTest extends \PHPUnit_Framework_TestCase
     {
         $configs = array(
             'bwc_component_jwt_api' => array(
+                'issuer_provider' => array(
+                    'issuer' => 'foo'
+                ),
                 'key_provider' => array(
                     'keys' => $keys = array($key1 = '111', $key2 = '222')
                 )
@@ -366,6 +465,9 @@ class BWCComponentJwtApiExtensionTest extends \PHPUnit_Framework_TestCase
     {
         $configs = array(
             'bwc_component_jwt_api' => array(
+                'issuer_provider' => array(
+                    'issuer' => 'foo'
+                ),
                 'key_provider' => array(
                     'id' => $keyProviderServiceId = 'key.provider.service.id'
                 )
@@ -392,6 +494,9 @@ class BWCComponentJwtApiExtensionTest extends \PHPUnit_Framework_TestCase
     {
         $configs = array(
             'bwc_component_jwt_api' => array(
+                'issuer_provider' => array(
+                    'issuer' => 'foo'
+                ),
                 'subject_provider' => $subjectProviderServiceId = 'subject.provider.service.id'
             )
         );
@@ -416,7 +521,14 @@ class BWCComponentJwtApiExtensionTest extends \PHPUnit_Framework_TestCase
      */
     public function throwOnContextHandlerWithoutPriority()
     {
-        $configs = array();
+        $configs = array(
+            'bwc_component_jwt_api' => array(
+                'issuer_provider' => array(
+                    'issuer' => 'foo'
+                )
+            )
+        );
+
         $extension = new BWCComponentJwtApiExtension();
         $containerBuilder = new ContainerBuilder(new ParameterBag());
 
@@ -434,7 +546,14 @@ class BWCComponentJwtApiExtensionTest extends \PHPUnit_Framework_TestCase
      */
     public function throwOnContextHandlerWithoutInvalidPriority()
     {
-        $configs = array();
+        $configs = array(
+            'bwc_component_jwt_api' => array(
+                'issuer_provider' => array(
+                    'issuer' => 'foo'
+                )
+            )
+        );
+
         $extension = new BWCComponentJwtApiExtension();
         $containerBuilder = new ContainerBuilder(new ParameterBag());
 
@@ -452,7 +571,14 @@ class BWCComponentJwtApiExtensionTest extends \PHPUnit_Framework_TestCase
      */
     public function throwOnMethodServiceHavingMoreThenOneMethodTag()
     {
-        $configs = array();
+        $configs = array(
+            'bwc_component_jwt_api' => array(
+                'issuer_provider' => array(
+                    'issuer' => 'foo'
+                )
+            )
+        );
+
         $extension = new BWCComponentJwtApiExtension();
         $containerBuilder = new ContainerBuilder(new ParameterBag());
 
@@ -477,7 +603,14 @@ class BWCComponentJwtApiExtensionTest extends \PHPUnit_Framework_TestCase
      */
     public function throwOnMethodServiceMissingMethodAttribute()
     {
-        $configs = array();
+        $configs = array(
+            'bwc_component_jwt_api' => array(
+                'issuer_provider' => array(
+                    'issuer' => 'foo'
+                )
+            )
+        );
+
         $extension = new BWCComponentJwtApiExtension();
         $containerBuilder = new ContainerBuilder(new ParameterBag());
 
@@ -497,7 +630,14 @@ class BWCComponentJwtApiExtensionTest extends \PHPUnit_Framework_TestCase
      */
     public function throwOnMethodServiceMissingDirectionAttribute()
     {
-        $configs = array();
+        $configs = array(
+            'bwc_component_jwt_api' => array(
+                'issuer_provider' => array(
+                    'issuer' => 'foo'
+                )
+            )
+        );
+
         $extension = new BWCComponentJwtApiExtension();
         $containerBuilder = new ContainerBuilder(new ParameterBag());
 
@@ -517,7 +657,14 @@ class BWCComponentJwtApiExtensionTest extends \PHPUnit_Framework_TestCase
      */
     public function throwOnMethodServiceHasInvalidDirectionAttribute()
     {
-        $configs = array();
+        $configs = array(
+            'bwc_component_jwt_api' => array(
+                'issuer_provider' => array(
+                    'issuer' => 'foo'
+                )
+            )
+        );
+
         $extension = new BWCComponentJwtApiExtension();
         $containerBuilder = new ContainerBuilder(new ParameterBag());
 
@@ -538,7 +685,14 @@ class BWCComponentJwtApiExtensionTest extends \PHPUnit_Framework_TestCase
      */
     public function throwWhenMethodAlreadyDefined()
     {
-        $configs = array();
+        $configs = array(
+            'bwc_component_jwt_api' => array(
+                'issuer_provider' => array(
+                    'issuer' => 'foo'
+                )
+            )
+        );
+
         $extension = new BWCComponentJwtApiExtension();
         $containerBuilder = new ContainerBuilder(new ParameterBag());
 
@@ -567,7 +721,14 @@ class BWCComponentJwtApiExtensionTest extends \PHPUnit_Framework_TestCase
      */
     public function throwOnDecoratorMissingDecoratorAttribute()
     {
-        $configs = array();
+        $configs = array(
+            'bwc_component_jwt_api' => array(
+                'issuer_provider' => array(
+                    'issuer' => 'foo'
+                )
+            )
+        );
+
         $extension = new BWCComponentJwtApiExtension();
         $containerBuilder = new ContainerBuilder(new ParameterBag());
 
@@ -585,7 +746,14 @@ class BWCComponentJwtApiExtensionTest extends \PHPUnit_Framework_TestCase
      */
     public function throwOnDecoratorAlreadyDefined()
     {
-        $configs = array();
+        $configs = array(
+            'bwc_component_jwt_api' => array(
+                'issuer_provider' => array(
+                    'issuer' => 'foo'
+                )
+            )
+        );
+
         $extension = new BWCComponentJwtApiExtension();
         $containerBuilder = new ContainerBuilder(new ParameterBag());
 

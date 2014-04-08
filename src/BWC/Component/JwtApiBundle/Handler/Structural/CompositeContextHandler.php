@@ -5,6 +5,7 @@ namespace BWC\Component\JwtApiBundle\Handler\Structural;
 use BWC\Component\JwtApiBundle\Context\ContextOptions;
 use BWC\Component\JwtApiBundle\Context\JwtContext;
 use BWC\Component\JwtApiBundle\Handler\ContextHandlerInterface;
+use BWC\Component\JwtApiBundle\Strategy\Exception\ExceptionStrategyInterface;
 
 
 class CompositeContextHandler implements ContextHandlerInterface
@@ -12,12 +13,52 @@ class CompositeContextHandler implements ContextHandlerInterface
     /** @var ContextHandlerInterface[] */
     protected $contextHandlers = array();
 
+    /** @var  ExceptionStrategyInterface|null */
+    protected $exceptionStrategy;
+
+
 
     /**
      * @param JwtContext $context
      * @throws \Exception
      */
     public function handleContext(JwtContext $context)
+    {
+        try {
+
+            $this->iterateChildren($context);
+
+        } catch (\Exception $ex) {
+            if ($this->exceptionStrategy) {
+                $this->exceptionStrategy->handle($ex, $context);
+            }
+        }
+    }
+
+
+    /**
+     * @param \BWC\Component\JwtApiBundle\Strategy\Exception\ExceptionStrategyInterface|null $exceptionStrategy
+     */
+    public function setExceptionStrategy($exceptionStrategy)
+    {
+        $this->exceptionStrategy = $exceptionStrategy;
+    }
+
+    /**
+     * @return \BWC\Component\JwtApiBundle\Strategy\Exception\ExceptionStrategyInterface|null
+     */
+    public function getExceptionStrategy()
+    {
+        return $this->exceptionStrategy;
+    }
+
+
+
+    /**
+     * @param JwtContext $context
+     * @throws \Exception
+     */
+    protected function iterateChildren(JwtContext $context)
     {
         foreach ($this->contextHandlers as $handle) {
             $handle->handleContext($context);
@@ -33,7 +74,6 @@ class CompositeContextHandler implements ContextHandlerInterface
             }
             throw $ex;
         }
-
     }
 
 

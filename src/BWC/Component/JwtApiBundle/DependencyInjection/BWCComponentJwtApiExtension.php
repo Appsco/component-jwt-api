@@ -32,6 +32,7 @@ class BWCComponentJwtApiExtension extends Extension
 
     protected function build(array $config, ContainerBuilder $container)
     {
+        $this->buildIssuerProvider($config['issuer_provider'], $container);
         $this->buildKeyProvider(isset($config['key_provider']) ? $config['key_provider'] : array(), $container);
         $this->buildBearerProvider($config, $container);
         $this->buildSubjectProvider($config, $container);
@@ -39,6 +40,22 @@ class BWCComponentJwtApiExtension extends Extension
         $this->buildAllMethods($container);
     }
 
+
+    protected function buildIssuerProvider(array $config, ContainerBuilder $container)
+    {
+        if (isset($config['id'])) {
+            $issuerProviderId = $config['id'];
+        } else if (isset($config['issuer'])) {
+            $issuerProviderId = 'bwc_component_jwt_api.issuer_provider.simple';
+            $service = $container->getDefinition($issuerProviderId);
+            $service->replaceArgument(0, array($config['issuer']));
+        } else {
+            throw new InvalidConfigurationException('bwc_component_jwt_api.issuer_provider must have either id or issuer option');
+        }
+
+        $handler = $container->getDefinition('bwc_component_jwt_api.handler.my_issuer_id');
+        $handler->replaceArgument(0, new Reference($issuerProviderId));
+    }
 
     /**
      * @param array $config

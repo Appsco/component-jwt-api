@@ -82,14 +82,20 @@ class CompositeContextHandlerTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage some message
      */
     public function shouldThrowOnRaiseExceptionOptionButCallAllHandlers()
     {
         $contextMock = $this->getJwtContextMock();
 
+        $expectedException = new RuntimeException('some message');
+
+        $exceptionStrategyMock = $this->getExceptionStrategyMock();
+        $exceptionStrategyMock->expects($this->once())
+            ->method('handle')
+            ->with($expectedException, $contextMock);
+
         $composite = new CompositeContextHandler();
+        $composite->setExceptionStrategy($exceptionStrategyMock);
 
         $h1 = $this->getContextHandlerMock();
         $h1->expects($this->once())
@@ -101,8 +107,8 @@ class CompositeContextHandlerTest extends \PHPUnit_Framework_TestCase
         $h2->expects($this->once())
             ->method('handleContext')
             ->with($contextMock)
-            ->will($this->returnCallback(function(JwtContext $ctx) {
-                $ctx->optionSet(ContextOptions::RAISE_EXCEPTION, new RuntimeException('some message'));
+            ->will($this->returnCallback(function(JwtContext $ctx) use ($expectedException) {
+                $ctx->optionSet(ContextOptions::RAISE_EXCEPTION, $expectedException);
             }));
         $composite->addContextHandler($h2);
 
@@ -131,5 +137,13 @@ class CompositeContextHandlerTest extends \PHPUnit_Framework_TestCase
     protected function getJwtContextMock()
     {
         return $this->getMock('BWC\Component\JwtApiBundle\Context\JwtContext', array('none'), array(), '', false);
+    }
+
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject|\BWC\Component\JwtApiBundle\Strategy\Exception\ExceptionStrategyInterface
+     */
+    protected function getExceptionStrategyMock()
+    {
+        return $this->getMock('BWC\Component\JwtApiBundle\Strategy\Exception\ExceptionStrategyInterface');
     }
 } 

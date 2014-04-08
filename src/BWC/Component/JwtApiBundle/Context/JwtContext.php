@@ -26,6 +26,9 @@ class JwtContext implements \JsonSerializable
     /** @var  mixed|null */
     protected $subject;
 
+    /** @var  string|null */
+    protected $myIssuerId;
+
     /** @var  \BWC\Component\JwtApiBundle\Method\MethodJwt */
     protected $responseJwt;
 
@@ -143,6 +146,23 @@ class JwtContext implements \JsonSerializable
         return $this->subject;
     }
 
+    /**
+     * @param null|string $myIssuerId
+     */
+    public function setMyIssuerId($myIssuerId)
+    {
+        $this->myIssuerId = $myIssuerId;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getMyIssuerId()
+    {
+        return $this->myIssuerId;
+    }
+
+    
     /**
      * @param \BWC\Component\JwtApiBundle\Method\MethodJwt $responseJwt
      */

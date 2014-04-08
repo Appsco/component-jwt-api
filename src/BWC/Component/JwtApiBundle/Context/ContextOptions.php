@@ -10,6 +10,7 @@ final class ContextOptions
 
     const RAISE_EXCEPTION = 'raise_exception';
 
+    const HANDLED = 'handled';
 
     private function __construct() { }
 } 

@@ -1,29 +1,23 @@
 <?php
 
-namespace BWC\Component\JwtApiBundle\Handler\Functional;
+namespace BWC\Component\JwtApiBundle\Strategy\Exception;
 
-use BWC\Component\JwtApiBundle\Context\ContextOptions;
 use BWC\Component\JwtApiBundle\Context\JwtContext;
-use BWC\Component\JwtApiBundle\Error\JwtException;
-use BWC\Component\JwtApiBundle\Handler\ContextHandlerInterface;
 use BWC\Component\JwtApiBundle\Method\Directions;
 use BWC\Component\JwtApiBundle\Method\MethodJwt;
 
-class UnhandledContextHandler implements ContextHandlerInterface
+class SetToResponseJwt implements ExceptionStrategyInterface
 {
     /**
+     * @param \Exception $exception
      * @param JwtContext $context
-     * @throws \BWC\Component\JwtApiBundle\Error\JwtException
+     * @return void
      */
-    public function handleContext(JwtContext $context)
+    public function handle(\Exception $exception, JwtContext $context)
     {
-        if ($context->optionGet(ContextOptions::HANDLED)) {
-            return;
-        }
-
         $requestJwt = $context->getRequestJwt();
         if ($requestJwt->getDirection() == Directions::RESPONSE) {
-            throw new JwtException('Unhandled response');
+            return;
         }
 
         $responseJwt = MethodJwt::create(
@@ -35,7 +29,7 @@ class UnhandledContextHandler implements ContextHandlerInterface
             $requestJwt->getJwtId()
         );
 
-        $responseJwt->setException('Unhandled request');
+        $responseJwt->setException($exception->getMessage());
 
         $context->setResponseJwt($responseJwt);
     }

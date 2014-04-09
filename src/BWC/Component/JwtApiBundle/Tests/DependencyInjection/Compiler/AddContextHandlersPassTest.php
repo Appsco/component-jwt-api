@@ -47,16 +47,33 @@ class AddContextHandlersPassTest extends \PHPUnit_Framework_TestCase
      */
     public function throwOnContextHandlerWithoutPriority()
     {
-        $compiler = new AddContextHandlersPass();
         $containerBuilder = new ContainerBuilder(new ParameterBag());
-
-        $containerBuilder->setDefinition('bwc_component_jwt_api.handler.method', new Definition(''));
 
         $handlerDefinition = new Definition($class = 'method\class');
         $handlerDefinition->addTag('bwc_component_jwt_api.handler', array());
         $containerBuilder->setDefinition($methodId = 'acme.handler.one', $handlerDefinition);
 
+        $compiler = new AddContextHandlersPass();
         $compiler->process($containerBuilder);
     }
+
+    /**
+     * @test
+     * @expectedException \Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
+     * @expectedExceptionMessage Service 'acme.handler.one' has invalid priority 'foo' on bwc_component_jwt_api.handler tag
+     */
+    public function throwOnContextHandlerWithInvalidPriority()
+    {
+        $containerBuilder = new ContainerBuilder(new ParameterBag());
+
+        $handlerDefinition = new Definition($class = 'method\class');
+        $handlerDefinition->addTag('bwc_component_jwt_api.handler', array('priority'=>'foo'));
+        $containerBuilder->setDefinition($methodId = 'acme.handler.one', $handlerDefinition);
+
+        $compiler = new AddContextHandlersPass();
+        $compiler->process($containerBuilder);
+    }
+
+
 
 } 

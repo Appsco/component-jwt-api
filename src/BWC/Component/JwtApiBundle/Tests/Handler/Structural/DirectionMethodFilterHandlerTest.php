@@ -153,7 +153,9 @@ class DirectionMethodFilterHandlerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param array $ctorArguments
+     * @param array $header
+     * @param array $payload
+     * @internal param array $ctorArguments
      * @return \PHPUnit_Framework_MockObject_MockObject|\BWC\Component\JwtApiBundle\Method\MethodJwt
      */
     protected function getMethodJwtMock(array $header, array $payload)

@@ -7,7 +7,6 @@ use BWC\Component\JwtApiBundle\Handler\ContextHandlerInterface;
 use BWC\Component\JwtApiBundle\Handler\Structural\CompositeContextHandler;
 use BWC\Component\JwtApiBundle\Receiver\ReceiverInterface;
 use BWC\Component\JwtApiBundle\Sender\SenderInterface;
-use BWC\Component\JwtApiBundle\Strategy\Exception\ExceptionStrategyInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 

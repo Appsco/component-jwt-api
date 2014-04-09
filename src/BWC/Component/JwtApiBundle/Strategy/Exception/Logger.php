@@ -5,6 +5,7 @@ namespace BWC\Component\JwtApiBundle\Strategy\Exception;
 use BWC\Component\JwtApiBundle\Context\JwtContext;
 use Psr\Log\LoggerInterface;
 
+
 class Logger implements ExceptionStrategyInterface
 {
     /** @var  LoggerInterface */

@@ -9,6 +9,6 @@
     }, 
     "require": {
         "bwc/component-jwe": "dev-master",
-        "symfony/http-foundation": ">=2.2"
+        "symfony/http-foundation": "*"
     }
 }

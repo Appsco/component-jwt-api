@@ -4,7 +4,7 @@
     "minimum-stability": "stable",
     "autoload": {
         "psr-0": {
-            "BWC\\Component\\JwtApiBunle\\": "src/"
+            "BWC\\Component\\JwtApiBundle\\": "src/"
         }
     }, 
     "require": {

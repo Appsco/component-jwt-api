@@ -21,9 +21,15 @@ class UnhandledContextHandler implements ContextHandlerInterface
             return;
         }
 
+        $message = sprintf("Unhandled request for direction '%s' method '%s' of issuer '%s'",
+            $context->getRequestJwt()->getDirection(),
+            $context->getRequestJwt()->getMethod(),
+            $context->getRequestJwt()->getIssuer()
+        );
+
         $requestJwt = $context->getRequestJwt();
         if ($requestJwt->getDirection() == Directions::RESPONSE) {
-            throw new JwtException('Unhandled response');
+            throw new JwtException($message);
         }
 
         $responseJwt = MethodJwt::create(
@@ -35,7 +41,7 @@ class UnhandledContextHandler implements ContextHandlerInterface
             $requestJwt->getJwtId()
         );
 
-        $responseJwt->setException('Unhandled request');
+        $responseJwt->setException($message);
 
         $context->setResponseJwt($responseJwt);
     }

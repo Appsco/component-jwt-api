@@ -111,7 +111,7 @@ services:
 
     bwc_component_jwt_api.key_provider.simple:
         class: %bwc_component_jwt_api.key_provider.simple.class%
-        arguments: [bwc_component_jwt_api.key_provider.simple.keys] # factory sets keys from config
+        arguments: [%bwc_component_jwt_api.key_provider.simple.keys%] # factory sets keys from config
         public: false
 
     # VALIDATOR -----------------------------------------------

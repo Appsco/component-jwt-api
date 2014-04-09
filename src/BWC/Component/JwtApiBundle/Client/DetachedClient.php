@@ -17,19 +17,26 @@ class DetachedClient extends AbstractClient
 
     /**
      * @param HttpClientInterface $httpClient
-     * @param string $issuer
      * @param string $targetUrl
      * @param string $key
      * @param EncoderInterface $encoder
      */
-    public function __construct(HttpClientInterface $httpClient, $issuer, $targetUrl, $key, EncoderInterface $encoder)
+    public function __construct(HttpClientInterface $httpClient, $targetUrl, $key, EncoderInterface $encoder)
     {
-        parent::__construct($issuer, $targetUrl, $key, $encoder);
+        parent::__construct($targetUrl, $key, $encoder);
 
         $this->httpClient = $httpClient;
     }
 
 
+
+    /**
+     * @return \BWC\Share\Net\HttpClient\HttpClientInterface
+     */
+    public function getHttpClient()
+    {
+        return $this->httpClient;
+    }
 
 
     /**

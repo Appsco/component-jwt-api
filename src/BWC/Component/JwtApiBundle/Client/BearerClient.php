@@ -17,14 +17,13 @@ class BearerClient extends AbstractClient
 
     /**
      * @param string $replyToUrl
-     * @param string $issuer
      * @param string $targetUrl
      * @param string $key
      * @param EncoderInterface $encoder
      */
-    public function __construct($replyToUrl, $issuer, $targetUrl, $key, EncoderInterface $encoder)
+    public function __construct($replyToUrl, $targetUrl, $key, EncoderInterface $encoder)
     {
-        parent::__construct($issuer, $targetUrl, $key, $encoder);
+        parent::__construct($targetUrl, $key, $encoder);
 
         $this->replyToUrl = $replyToUrl;
     }

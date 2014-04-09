@@ -19,9 +19,6 @@ abstract class AbstractClient
     protected $audience;
 
     /** @var  string */
-    protected $issuer;
-
-    /** @var  string */
     protected $targetUrl;
 
     /** @var  string */
@@ -33,14 +30,12 @@ abstract class AbstractClient
 
 
     /**
-     * @param string $issuer
      * @param string $targetUrl
      * @param string $key
      * @param EncoderInterface $encoder
      */
-    public function __construct($issuer, $targetUrl, $key, EncoderInterface $encoder)
+    public function __construct($targetUrl, $key, EncoderInterface $encoder)
     {
-        $this->issuer = (string)$issuer;
         $this->targetUrl = (string)$targetUrl;
         $this->key = (string)$key;
         $this->encoder = $encoder;
@@ -110,6 +105,38 @@ abstract class AbstractClient
     public function getAudience()
     {
         return $this->audience;
+    }
+
+    /**
+     * @param string $targetUrl
+     */
+    public function setTargetUrl($targetUrl)
+    {
+        $this->targetUrl = $targetUrl;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTargetUrl()
+    {
+        return $this->targetUrl;
+    }
+
+    /**
+     * @param string $key
+     */
+    public function setKey($key)
+    {
+        $this->key = $key;
+    }
+
+    /**
+     * @return string
+     */
+    public function getKey()
+    {
+        return $this->key;
     }
 
 

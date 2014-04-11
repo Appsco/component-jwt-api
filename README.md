@@ -5,9 +5,10 @@ Appsco JWT API Library
 
 JWT Processing server implementation in PHP.
 
-[JWT Manager](src/BWC/Component/JwtApiBundle/Resources/doc/manager.md)
-[Received](src/BWC/Component/JwtApiBundle/Resources/doc/receiver.md)
-[Sender](src/BWC/Component/JwtApiBundle/Resources/doc/sender.md)
-[Bearer](src/BWC/Component/JwtApiBundle/Resources/doc/bearer.md)
-[Subject](src/BWC/Component/JwtApiBundle/Resources/doc/subject.md)
+Documentation
+* [JWT Manager](src/BWC/Component/JwtApiBundle/Resources/doc/manager.md)
+* [Received](src/BWC/Component/JwtApiBundle/Resources/doc/receiver.md)
+* [Sender](src/BWC/Component/JwtApiBundle/Resources/doc/sender.md)
+* [Bearer](src/BWC/Component/JwtApiBundle/Resources/doc/bearer.md)
+* [Subject](src/BWC/Component/JwtApiBundle/Resources/doc/subject.md)
 

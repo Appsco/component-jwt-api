@@ -1,5 +1,5 @@
 {
-    "name": "bwc/component-jwt-api",
+    "name": "appsco/component-jwt-api",
     "license": "MIT",
     "minimum-stability": "stable",
     "autoload": {
@@ -8,7 +8,7 @@
         }
     }, 
     "require": {
-        "bwc/component-jwe": "dev-master",
+        "appsco/component-jwe": "dev-master",
         "symfony/http-foundation": "*"
     }
 }

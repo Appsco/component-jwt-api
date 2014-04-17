@@ -71,10 +71,16 @@ class DetachedClient extends AbstractClient
             throw new \RuntimeException(sprintf('API error: %s %s', $statusCode, $response));
         }
 
+        $resultJwt = null;
+
         if ($response) {
-            $result = $this->encoder->decode($response, $this->key);
-            $resultJwt = new MethodJwt($result->getHeader(), $result->getPayload());
-        } else {
+            try {
+                $result = $this->encoder->decode($response, $this->key);
+                $resultJwt = new MethodJwt($result->getHeader(), $result->getPayload());
+            } catch (\Exception $ex) { }
+        }
+
+        if (!$resultJwt) {
             $resultJwt = new MethodJwt();
         }
 

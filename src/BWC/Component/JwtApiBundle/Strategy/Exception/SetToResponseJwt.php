@@ -16,7 +16,7 @@ class SetToResponseJwt implements ExceptionStrategyInterface
     public function handle(\Exception $exception, JwtContext $context)
     {
         $requestJwt = $context->getRequestJwt();
-        if ($requestJwt->getDirection() == Directions::RESPONSE) {
+        if (!$requestJwt || $requestJwt->getDirection() == Directions::RESPONSE) {
             return;
         }
 

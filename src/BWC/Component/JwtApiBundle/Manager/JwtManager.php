@@ -7,6 +7,7 @@ use BWC\Component\JwtApiBundle\Handler\ContextHandlerInterface;
 use BWC\Component\JwtApiBundle\Handler\Structural\CompositeContextHandler;
 use BWC\Component\JwtApiBundle\Receiver\ReceiverInterface;
 use BWC\Component\JwtApiBundle\Sender\SenderInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 
@@ -18,16 +19,20 @@ class JwtManager extends CompositeContextHandler implements JwtManagerInterface
     /** @var  SenderInterface */
     protected $sender;
 
+    /** @var  LoggerInterface */
+    protected $logger;
 
 
     /**
      * @param ReceiverInterface $receiver
      * @param SenderInterface $sender
+     * @param \Psr\Log\LoggerInterface $logger
      */
-    public function __construct(ReceiverInterface $receiver, SenderInterface $sender)
+    public function __construct(ReceiverInterface $receiver, SenderInterface $sender, LoggerInterface $logger)
     {
         $this->receiver = $receiver;
         $this->sender = $sender;
+        $this->logger = $logger;
     }
 
 
@@ -39,9 +44,15 @@ class JwtManager extends CompositeContextHandler implements JwtManagerInterface
      */
     public function handleRequest(Request $request)
     {
+        $this->logger->debug('JwtManager.start', array('get'=>$request->request->all(), 'post'=>$request->query->all()));
+
         $context = $this->receive($request);
 
+        $this->logger->debug('JwtManager.received', array('context'=>$context));
+
         $this->handleContext($context);
+
+        $this->logger->debug('JwtManager.handled', array('context'=>$context));
 
         return $this->send($context);
     }

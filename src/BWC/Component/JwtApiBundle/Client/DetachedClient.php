@@ -54,7 +54,7 @@ class DetachedClient extends AbstractClient
 
         if ($binding == JwtBindingTypes::HTTP_POST) {
 
-            $response = $this->httpClient->post($this->targetUrl, array(), array('jwt'=>$token), 'application/jwt');
+            $response = $this->httpClient->post($this->targetUrl, array(), array('jwt'=>$token));
 
         } else if ($binding == JwtBindingTypes::HTTP_REDIRECT) {
 

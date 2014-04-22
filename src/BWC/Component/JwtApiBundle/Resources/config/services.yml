@@ -45,7 +45,7 @@ services:
 
     bwc_component_jwt_api.jwt_manager:
         class: %bwc_component_jwt_api.jwt_manager.class%
-        arguments: [@bwc_component_jwt_api.receiver, @bwc_component_jwt_api.sender]
+        arguments: [@bwc_component_jwt_api.receiver, @bwc_component_jwt_api.sender, @logger]
         calls:
             - [ setExceptionStrategy, [@bwc_component_jwt_api.exception_strategy]]
         # factory sets handlers by tag bwc_component_jwt_api.handler and with order of priority attribute

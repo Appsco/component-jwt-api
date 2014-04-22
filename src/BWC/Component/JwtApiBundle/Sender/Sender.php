@@ -102,7 +102,7 @@ class Sender implements SenderInterface
 <!doctype html>
 <html>
 <head>
-    <meta http-equiv="content-type" content="application/jwt; charset=utf-8" />
+    <meta http-equiv="content-type" content="charset=utf-8" />
     <title>POST data</title>
 </head>
 <body onload="document.getElementsByTagName('input')[0].click();">

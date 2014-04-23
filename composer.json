@@ -9,6 +9,7 @@
     }, 
     "require": {
         "appsco/component-jwe": "dev-master",
-        "symfony/http-foundation": "*"
+        "appsco/component-share": "dev-master",
+        "symfony/symfony": ">=2.2"
     }
 }

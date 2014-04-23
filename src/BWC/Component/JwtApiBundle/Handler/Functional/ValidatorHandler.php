@@ -5,6 +5,7 @@ namespace BWC\Component\JwtApiBundle\Handler\Functional;
 use BWC\Component\JwtApiBundle\Context\JwtContext;
 use BWC\Component\JwtApiBundle\Handler\ContextHandlerInterface;
 use BWC\Component\JwtApiBundle\Validator\JwtValidatorInterface;
+use Psr\Log\LoggerInterface;
 
 
 class ValidatorHandler implements ContextHandlerInterface
@@ -12,10 +13,18 @@ class ValidatorHandler implements ContextHandlerInterface
     /** @var  JwtValidatorInterface */
     protected $validator;
 
+    /** @var  LoggerInterface|null */
+    protected $logger;
 
-    public function __construct(JwtValidatorInterface $validator)
+
+    /**
+     * @param JwtValidatorInterface $validator
+     * @param LoggerInterface $logger
+     */
+    public function __construct(JwtValidatorInterface $validator, LoggerInterface $logger = null)
     {
         $this->validator = $validator;
+        $this->logger = $logger;
     }
 
 
@@ -25,6 +34,10 @@ class ValidatorHandler implements ContextHandlerInterface
      */
     public function handleContext(JwtContext $context)
     {
+        if ($this->logger) {
+            $this->logger->debug('ValidatorHandler', array('context'=>$context));
+        }
+
         $this->validator->validate($context);
     }
 

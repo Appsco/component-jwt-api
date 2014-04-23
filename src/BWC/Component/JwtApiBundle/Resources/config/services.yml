@@ -152,7 +152,7 @@ services:
 
     bwc_component_jwt_api.handler.my_issuer_id:
         class: %bwc_component_jwt_api.handler.my_issuer_id.class%
-        arguments: [@bwc_component_jwt_api.issuer_provider.simple]
+        arguments: [@bwc_component_jwt_api.issuer_provider.simple, @logger]
         tags:
             - { name: 'bwc_component_jwt_api.handler', priority: 100 }
         public: false
@@ -160,35 +160,35 @@ services:
 
     bwc_component_jwt_api.handler.decoder:
         class: %bwc_component_jwt_api.handler.decoder.class%
-        arguments: [@bwc_component_jwt_api.encoder, %bwc_component_jwt_api.encoder.decode_class%]
+        arguments: [@bwc_component_jwt_api.encoder, %bwc_component_jwt_api.encoder.decode_class%, @logger]
         tags:
             - { name: 'bwc_component_jwt_api.handler', priority: 200 }
         public: false
 
     bwc_component_jwt_api.handler.key_provider:
         class: %bwc_component_jwt_api.handler.key_provider.class%
-        arguments: [@bwc_component_jwt_api.key_provider.simple] # factory sets key provider
+        arguments: [@bwc_component_jwt_api.key_provider.simple, @logger] # factory sets key provider
         tags:
             - { name: 'bwc_component_jwt_api.handler', priority: 300 }
         public: false
 
     bwc_component_jwt_api.handler.validator:
         class: %bwc_component_jwt_api.handler.validator.class%
-        arguments: [@bwc_component_jwt_api.validator]
+        arguments: [@bwc_component_jwt_api.validator, @logger]
         tags:
             - { name: 'bwc_component_jwt_api.handler', priority: 400 }
         public: false
 
     bwc_component_jwt_api.handler.bearer_provider:
         class: %bwc_component_jwt_api.handler.bearer_provider.class%
-        arguments: [@bwc_component_jwt_api.bearer_provider.user_security_context] # factory sets bearer provider
+        arguments: [@bwc_component_jwt_api.bearer_provider.user_security_context, @logger] # factory sets bearer provider
         tags:
             - { name: 'bwc_component_jwt_api.handler', priority: 500 }
         public: false
 
     bwc_component_jwt_api.handler.subject_provider:
         class: %bwc_component_jwt_api.handler.subject_provider.class%
-        arguments: [@bwc_component_jwt_api.subject_provider.null] # factory sets subject provider
+        arguments: [@bwc_component_jwt_api.subject_provider.null, @logger] # factory sets subject provider
         tags:
             - { name: 'bwc_component_jwt_api.handler', priority: 600 }
         public: false
@@ -202,13 +202,14 @@ services:
 
     bwc_component_jwt_api.handler.unhandled:
         class: %bwc_component_jwt_api.handler.unhandled.class%
+        arguments: [@logger]
         tags:
             - { name: 'bwc_component_jwt_api.handler', priority: 2000 }
         public: false
 
     bwc_component_jwt_api.handler.encoder:
         class: %bwc_component_jwt_api.handler.encoder.class%
-        arguments: [@bwc_component_jwt_api.encoder]
+        arguments: [@bwc_component_jwt_api.encoder, @logger]
         tags:
             - { name: 'bwc_component_jwt_api.handler', priority: 3000 }
         public: false

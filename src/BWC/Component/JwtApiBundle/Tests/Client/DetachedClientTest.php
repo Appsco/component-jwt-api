@@ -18,7 +18,7 @@ class DetachedClientTest extends \PHPUnit_Framework_TestCase
      */
     public function shouldConstruct()
     {
-        new DetachedClient($this->getHttpClientMock(), 'issuer', 'targetUrl', 'key', $this->getEncoderMock());
+        new DetachedClient($this->getHttpClientMock(), 'targetUrl', 'key', $this->getEncoderMock());
     }
 
     /**
@@ -26,7 +26,6 @@ class DetachedClientTest extends \PHPUnit_Framework_TestCase
      */
     public function shouldSendHttpPost()
     {
-        $expectedIssuer = 'issuer';
         $expectedTargetUrl = 'targetUrl';
         $expectedKey ='key';
 
@@ -54,7 +53,7 @@ class DetachedClientTest extends \PHPUnit_Framework_TestCase
                 ->will($this->returnValue($expectedResponseJwt));
 
 
-        $client = new DetachedClient($httpClientMock, $expectedIssuer, $expectedTargetUrl, $expectedKey, $encoderMock);
+        $client = new DetachedClient($httpClientMock, $expectedTargetUrl, $expectedKey, $encoderMock);
 
         $response = $client->send(JwtBindingTypes::HTTP_POST, $jwtRequest);
 
@@ -70,7 +69,6 @@ class DetachedClientTest extends \PHPUnit_Framework_TestCase
      */
     public function shouldSendHttpRedirect()
     {
-        $expectedIssuer = 'issuer';
         $expectedTargetUrl = 'targetUrl';
         $expectedKey ='key';
 
@@ -98,7 +96,7 @@ class DetachedClientTest extends \PHPUnit_Framework_TestCase
                 ->will($this->returnValue($expectedResponseJwt));
 
 
-        $client = new DetachedClient($httpClientMock, $expectedIssuer, $expectedTargetUrl, $expectedKey, $encoderMock);
+        $client = new DetachedClient($httpClientMock, $expectedTargetUrl, $expectedKey, $encoderMock);
 
         $response = $client->send(JwtBindingTypes::HTTP_REDIRECT, $jwtRequest);
 
@@ -113,7 +111,6 @@ class DetachedClientTest extends \PHPUnit_Framework_TestCase
      */
     public function shouldSendReturnEmptyJwtWhenEmptyResponse()
     {
-        $expectedIssuer = 'issuer';
         $expectedTargetUrl = 'targetUrl';
         $expectedKey ='key';
 
@@ -138,7 +135,7 @@ class DetachedClientTest extends \PHPUnit_Framework_TestCase
                 ->method('decode');
 
 
-        $client = new DetachedClient($httpClientMock, $expectedIssuer, $expectedTargetUrl, $expectedKey, $encoderMock);
+        $client = new DetachedClient($httpClientMock, $expectedTargetUrl, $expectedKey, $encoderMock);
 
         $response = $client->send(JwtBindingTypes::HTTP_REDIRECT, $jwtRequest);
 
@@ -156,7 +153,6 @@ class DetachedClientTest extends \PHPUnit_Framework_TestCase
      */
     public function shouldThrowRemoteExceptionIfGivenInResponseJwt()
     {
-        $expectedIssuer = 'issuer';
         $expectedTargetUrl = 'targetUrl';
         $expectedKey ='key';
 
@@ -184,7 +180,7 @@ class DetachedClientTest extends \PHPUnit_Framework_TestCase
                 ->will($this->returnValue($expectedResponseJwt));
 
 
-        $client = new DetachedClient($httpClientMock, $expectedIssuer, $expectedTargetUrl, $expectedKey, $encoderMock);
+        $client = new DetachedClient($httpClientMock, $expectedTargetUrl, $expectedKey, $encoderMock);
 
         $client->send(JwtBindingTypes::HTTP_REDIRECT, $jwtRequest);
     }
@@ -196,7 +192,6 @@ class DetachedClientTest extends \PHPUnit_Framework_TestCase
      */
     public function shouldThrowOnHttpException()
     {
-        $expectedIssuer = 'issuer';
         $expectedTargetUrl = 'targetUrl';
         $expectedKey ='key';
 
@@ -221,7 +216,7 @@ class DetachedClientTest extends \PHPUnit_Framework_TestCase
                 ->method('decode');
 
 
-        $client = new DetachedClient($httpClientMock, $expectedIssuer, $expectedTargetUrl, $expectedKey, $encoderMock);
+        $client = new DetachedClient($httpClientMock, $expectedTargetUrl, $expectedKey, $encoderMock);
 
         $client->send(JwtBindingTypes::HTTP_REDIRECT, $jwtRequest);
     }

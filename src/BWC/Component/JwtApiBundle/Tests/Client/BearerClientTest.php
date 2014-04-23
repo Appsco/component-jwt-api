@@ -17,7 +17,7 @@ class BearerClientTest extends \PHPUnit_Framework_TestCase
      */
     public function shouldConstruct()
     {
-        new BearerClient('replyToUrl', 'issuer', 'targetUrl', 'key', $this->getEncoderMock());
+        new BearerClient('replyToUrl', 'targetUrl', 'key', $this->getEncoderMock());
     }
 
     /**
@@ -25,7 +25,7 @@ class BearerClientTest extends \PHPUnit_Framework_TestCase
      */
     public function shouldSetReplyToUrl()
     {
-        $client = new BearerClient($expectedReplyToUrl = 'replyToUrl', 'issuer', 'targetUrl', 'key', $this->getEncoderMock());
+        $client = new BearerClient($expectedReplyToUrl = 'replyToUrl', 'targetUrl', 'key', $this->getEncoderMock());
 
         $this->assertEquals($expectedReplyToUrl, $client->getReplyToUrl());
 
@@ -41,7 +41,6 @@ class BearerClientTest extends \PHPUnit_Framework_TestCase
     public function shouldSendHttpRedirect()
     {
         $expectedReplyToUrl = 'replyToUrl';
-        $expectedIssuer = 'issuer';
         $expectedTargetUrl = 'targetUrl';
         $expectedKey ='key';
 
@@ -55,7 +54,6 @@ class BearerClientTest extends \PHPUnit_Framework_TestCase
 
         $client = new BearerClient(
                 $expectedReplyToUrl,
-                $expectedIssuer,
                 $expectedTargetUrl,
                 $expectedKey,
                 $encoderMock
@@ -74,7 +72,6 @@ class BearerClientTest extends \PHPUnit_Framework_TestCase
     public function shouldSendHttpPost()
     {
         $expectedReplyToUrl = 'replyToUrl';
-        $expectedIssuer = 'issuer';
         $expectedTargetUrl = 'targetUrl';
         $expectedKey ='key';
 
@@ -88,7 +85,6 @@ class BearerClientTest extends \PHPUnit_Framework_TestCase
 
         $client = new BearerClient(
                 $expectedReplyToUrl,
-                $expectedIssuer,
                 $expectedTargetUrl,
                 $expectedKey,
                 $encoderMock

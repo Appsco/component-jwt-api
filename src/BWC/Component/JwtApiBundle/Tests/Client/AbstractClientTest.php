@@ -14,7 +14,6 @@ class AbstractClientTest extends \PHPUnit_Framework_TestCase
     public function shouldHaveDefaultBindingHttpPost()
     {
         $client = $this->getAbstractClientMock(array(
-                $expectedIssuer = 'issuer',
                 $expectedTargetUrl = 'target_url',
                 $expectedKey = 'key',
                 $expectedEncoder = $this->getEncoderMock()
@@ -29,7 +28,6 @@ class AbstractClientTest extends \PHPUnit_Framework_TestCase
     public function shouldSetDefaultBinding()
     {
         $client = $this->getAbstractClientMock(array(
-                $expectedIssuer = 'issuer',
                 $expectedTargetUrl = 'target_url',
                 $expectedKey = 'key',
                 $expectedEncoder = $this->getEncoderMock(),
@@ -49,7 +47,6 @@ class AbstractClientTest extends \PHPUnit_Framework_TestCase
     public function shouldThrowOnSetInvalidDefaultBinding()
     {
         $client = $this->getAbstractClientMock(array(
-                $expectedIssuer = 'issuer',
                 $expectedTargetUrl = 'target_url',
                 $expectedKey = 'key',
                 $expectedEncoder = $this->getEncoderMock(),
@@ -65,7 +62,6 @@ class AbstractClientTest extends \PHPUnit_Framework_TestCase
     public function shouldHaveDefaultAlgorithmHS512()
     {
         $client = $this->getAbstractClientMock(array(
-                $expectedIssuer = 'issuer',
                 $expectedTargetUrl = 'target_url',
                 $expectedKey = 'key',
                 $expectedEncoder = $this->getEncoderMock(),
@@ -81,7 +77,6 @@ class AbstractClientTest extends \PHPUnit_Framework_TestCase
     public function shouldSetAlgorithm()
     {
         $client = $this->getAbstractClientMock(array(
-                $expectedIssuer = 'issuer',
                 $expectedTargetUrl = 'target_url',
                 $expectedKey = 'key',
                 $expectedEncoder = $this->getEncoderMock(),
@@ -101,7 +96,6 @@ class AbstractClientTest extends \PHPUnit_Framework_TestCase
     public function shouldThrowOnSetInvalidAlgorithm()
     {
         $client = $this->getAbstractClientMock(array(
-                $expectedIssuer = 'issuer',
                 $expectedTargetUrl = 'target_url',
                 $expectedKey = 'key',
                 $expectedEncoder = $this->getEncoderMock(),
@@ -117,7 +111,6 @@ class AbstractClientTest extends \PHPUnit_Framework_TestCase
     public function shouldSetAudience()
     {
         $client = $this->getAbstractClientMock(array(
-                $expectedIssuer = 'issuer',
                 $expectedTargetUrl = 'target_url',
                 $expectedKey = 'key',
                 $expectedEncoder = $this->getEncoderMock(),
@@ -134,7 +127,7 @@ class AbstractClientTest extends \PHPUnit_Framework_TestCase
      */
     public function shouldCheckBindingToDefaultIfNotSet()
     {
-        $client = new AbstractClientMock('issuer', 'targetUrl', 'key', $this->getEncoderMock());
+        $client = new AbstractClientMock('targetUrl', 'key', $this->getEncoderMock());
 
         $binding = null;
         $client->testCheckBinding($binding);
@@ -147,7 +140,7 @@ class AbstractClientTest extends \PHPUnit_Framework_TestCase
      */
     public function shouldCheckBindingWithHttpPost()
     {
-        $client = new AbstractClientMock('issuer', 'targetUrl', 'key', $this->getEncoderMock());
+        $client = new AbstractClientMock('targetUrl', 'key', $this->getEncoderMock());
 
         $binding = JwtBindingTypes::HTTP_POST;
         $client->testCheckBinding($binding);
@@ -160,7 +153,7 @@ class AbstractClientTest extends \PHPUnit_Framework_TestCase
      */
     public function shouldCheckBindingWithHttpRedirect()
     {
-        $client = new AbstractClientMock('issuer', 'targetUrl', 'key', $this->getEncoderMock());
+        $client = new AbstractClientMock('targetUrl', 'key', $this->getEncoderMock());
 
         $binding = JwtBindingTypes::HTTP_REDIRECT;
         $client->testCheckBinding($binding);
@@ -175,7 +168,7 @@ class AbstractClientTest extends \PHPUnit_Framework_TestCase
      */
     public function shouldThrowOnCheckBindingWithInvalidBinding()
     {
-        $client = new AbstractClientMock('issuer', 'targetUrl', 'key', $this->getEncoderMock());
+        $client = new AbstractClientMock('targetUrl', 'key', $this->getEncoderMock());
 
         $binding = 'foo';
         $client->testCheckBinding($binding);
@@ -187,7 +180,7 @@ class AbstractClientTest extends \PHPUnit_Framework_TestCase
      */
     public function shouldGetRedirectUrlNotModifyIfNoQueryPart()
     {
-        $client = new AbstractClientMock('issuer', $expectedUrl = 'targetUrl', 'key', $this->getEncoderMock());
+        $client = new AbstractClientMock($expectedUrl = 'targetUrl', 'key', $this->getEncoderMock());
 
         $url = $client->testGetRedirectUrl();
 
@@ -201,7 +194,7 @@ class AbstractClientTest extends \PHPUnit_Framework_TestCase
     {
         $expectedUrl = 'targetUrl';
 
-        $client = new AbstractClientMock('issuer', $expectedUrl.'?a=1&b=2', 'key', $this->getEncoderMock());
+        $client = new AbstractClientMock($expectedUrl.'?a=1&b=2', 'key', $this->getEncoderMock());
 
         $url = $client->testGetRedirectUrl();
 

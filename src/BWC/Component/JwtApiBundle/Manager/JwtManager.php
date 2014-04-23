@@ -19,20 +19,37 @@ class JwtManager extends CompositeContextHandler implements JwtManagerInterface
     /** @var  SenderInterface */
     protected $sender;
 
-    /** @var  LoggerInterface */
+    /** @var  LoggerInterface|null */
     protected $logger;
 
 
     /**
      * @param ReceiverInterface $receiver
      * @param SenderInterface $sender
-     * @param \Psr\Log\LoggerInterface $logger
+     * @param \Psr\Log\LoggerInterface|null $logger
      */
-    public function __construct(ReceiverInterface $receiver, SenderInterface $sender, LoggerInterface $logger)
+    public function __construct(ReceiverInterface $receiver, SenderInterface $sender, LoggerInterface $logger = null)
     {
         $this->receiver = $receiver;
         $this->sender = $sender;
         $this->logger = $logger;
+    }
+
+
+    /**
+     * @param null|\Psr\Log\LoggerInterface $logger
+     */
+    public function setLogger($logger)
+    {
+        $this->logger = $logger;
+    }
+
+    /**
+     * @return null|\Psr\Log\LoggerInterface
+     */
+    public function getLogger()
+    {
+        return $this->logger;
     }
 
 
@@ -44,15 +61,21 @@ class JwtManager extends CompositeContextHandler implements JwtManagerInterface
      */
     public function handleRequest(Request $request)
     {
-        $this->logger->debug('JwtManager.start', array('get'=>$request->request->all(), 'post'=>$request->query->all()));
+        if ($this->logger) {
+            $this->logger->debug('JwtManager.start', array('get'=>$request->request->all(), 'post'=>$request->query->all()));
+        }
 
         $context = $this->receive($request);
 
-        $this->logger->debug('JwtManager.received', array('context'=>$context));
+        if ($this->logger) {
+            $this->logger->debug('JwtManager.received', array('context'=>$context));
+        }
 
         $this->handleContext($context);
 
-        $this->logger->debug('JwtManager.handled', array('context'=>$context));
+        if ($this->logger) {
+            $this->logger->debug('JwtManager.handled', array('context'=>$context));
+        }
 
         return $this->send($context);
     }

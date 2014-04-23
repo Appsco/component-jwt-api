@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit bootstrap="autoload.php" color="true">
+<phpunit
+    backupGlobals               = "false"
+    backupStaticAttributes      = "false"
+    colors                      = "false"
+    convertErrorsToExceptions   = "true"
+    convertNoticesToExceptions  = "true"
+    convertWarningsToExceptions = "true"
+    processIsolation            = "false"
+    stopOnFailure               = "false"
+    syntaxCheck                 = "false"
+    bootstrap="autoload.php"
+>
     <testsuites>
-        <testsuite name="BwcComponentJwtApi">
-            <directory suffix="Test.php">./src/Bwc/Component/JwtApi/Tests</directory>
-        </testsuite>
         <testsuite name="BwcComponentJwtApiBundle">
             <directory suffix="Test.php">./src/Bwc/Component/JwtApiBundle/Tests</directory>
         </testsuite>

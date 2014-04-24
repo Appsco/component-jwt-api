@@ -13,7 +13,7 @@
 >
     <testsuites>
         <testsuite name="BwcComponentJwtApiBundle">
-            <directory suffix="Test.php">./src/Bwc/Component/JwtApiBundle/Tests</directory>
+            <directory suffix="Test.php">./src/BWC/Component/JwtApiBundle/Tests</directory>
         </testsuite>
     </testsuites>
 </phpunit>

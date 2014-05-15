@@ -28,17 +28,12 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
         $loggerMock->expects($this->once())
             ->method('error');
 
-        $request = new Request();
-
         $expectedContext = array('requestBindingType'=>JwtBindingTypes::HTTP_POST, 'requestToken'=>'abc');
 
         $contextMock = $this->getJwtContextMock();
         $contextMock->expects($this->once())
             ->method('jsonSerialize')
             ->will($this->returnValue($expectedContext));
-        $contextMock->expects($this->once())
-            ->method('getRequest')
-            ->will($this->returnValue($request));
 
         $logger = new Logger($loggerMock);
 

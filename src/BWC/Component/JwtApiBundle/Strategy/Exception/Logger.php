@@ -24,9 +24,9 @@ class Logger implements ExceptionStrategyInterface
      */
     public function handle(\Exception $exception, JwtContext $context)
     {
-        $this->logger->error((string)$exception, array(
-            'context' => $context->jsonSerialize(),
-            'clientIps' => $context->getRequest()->getClientIps(),
+        $this->logger->error('BWC.JwtApi', array(
+            'exception' => (string)$exception,
+            'jwtContext' => $context->jsonSerialize()
         ));
     }
 

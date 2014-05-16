@@ -76,11 +76,11 @@ class Sender implements SenderInterface
     protected function sendRedirect(JwtContext $context)
     {
         $url = $this->getReplyUrl($context);
-        if (($pos = strpos($url, '?')) !== false) {
-            $url = substr($url, 0, $pos);
-        }
 
         if ($token = $context->getResponseToken()) {
+            if (($pos = strpos($url, '?')) !== false) {
+                $url = substr($url, 0, $pos);
+            }
             $url = $url.'?jwt='.$token;
         }
 

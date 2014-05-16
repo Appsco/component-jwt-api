@@ -8,8 +8,8 @@
         }
     }, 
     "require": {
-        "appsco/component-jwe": "dev-master",
-        "appsco/component-share": "dev-master",
+        "appsco/component-jwe": "*",
+        "appsco/component-share": "*",
         "symfony/symfony": ">=2.2"
     }
 }
